@@ -14,6 +14,13 @@ class AddMyCourse extends StatefulWidget {
 }
 
 class _AddMyCourseState extends State<AddMyCourse> {
+  Future selectedImages() async {
+    final List<XFile> selectedImage = await ImagePicker().pickMultipleMedia();
+    if (selectedImage.isNotEmpty) {
+      selectedImage.addAll(selectedImage);
+    }
+  }
+
   Future _pickImageFromGallery() async {
     final returnedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (returnedImage == null) return;

@@ -79,7 +79,7 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
             // adding a consumer so it listens to the events if there are courses show it here. these are my courses!!
-            const course_bookmarked(),
+            //const course_bookmarked(),
           ],
         ),
       ),

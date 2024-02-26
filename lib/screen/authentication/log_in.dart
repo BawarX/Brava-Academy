@@ -18,6 +18,9 @@ class _Login_screenState extends State<Login_screen> {
     Color outlineColor = Theme.of(context).primaryColor;
     Color fillColor = Colors.white;
     Color textColor = Theme.of(context).primaryColor;
+    TextEditingController emailController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: outlineColor,
@@ -84,6 +87,7 @@ class _Login_screenState extends State<Login_screen> {
                           const Gap(10),
                           Expanded(
                             child: TextField(
+                              controller: emailController,
                               style: TextStyle(
                                 color: outlineColor,
                                 fontSize: 18,
@@ -127,6 +131,7 @@ class _Login_screenState extends State<Login_screen> {
                           const Gap(10),
                           Expanded(
                             child: TextField(
+                              controller: passwordController,
                               obscureText: !isVisisble,
                               style: TextStyle(
                                 color: outlineColor,

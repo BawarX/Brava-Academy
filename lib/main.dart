@@ -1,3 +1,4 @@
+import 'package:brava/provider/bookmark.dart';
 import 'package:brava/screen/Home/bookmarked_course.dart';
 import 'package:brava/screen/Home/course_detail.dart';
 import 'package:brava/screen/Home/home_page.dart';
@@ -7,6 +8,7 @@ import 'package:brava/screen/on_boarding/screen_1.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,24 +19,31 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        //primaryColor: const
-        primaryColor: const Color.fromARGB(255, 106, 90, 223),
-        scaffoldBackgroundColor: const Color.fromARGB(255, 255, 251, 245),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => BookmarkProvider(),
+        )
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          //primaryColor: const
+          primaryColor: const Color.fromARGB(255, 106, 90, 223),
+          scaffoldBackgroundColor: const Color.fromARGB(255, 255, 251, 245),
 
-        textTheme: const TextTheme(
-          titleLarge: TextStyle(
-            color: Color.fromARGB(255, 106, 90, 223),
-          ),
-          bodyMedium: TextStyle(
-            color: Colors.black,
+          textTheme: const TextTheme(
+            titleLarge: TextStyle(
+              color: Color.fromARGB(255, 106, 90, 223),
+            ),
+            bodyMedium: TextStyle(
+              color: Colors.black,
+            ),
           ),
         ),
+        debugShowCheckedModeBanner: false,
+        home: const NavBar(),
       ),
-      debugShowCheckedModeBanner: false,
-      home: const NavBar(),
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:brava/model/courses.dart';
 
 import 'package:brava/model/instructor_model.dart';
 import 'package:brava/model/topics_model.dart';
+import 'package:brava/provider/bookmark.dart';
 import 'package:brava/screen/Home/add_course.dart';
 import 'package:brava/screen/Home/course_detail.dart';
 import 'package:brava/screen/Home/topic.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,6 +26,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     String userNmae = 'Bawar';
+    CourseModel courseModel;
+    final provider = Provider.of<BookmarkProvider>(context, listen: true);
 
     return Scaffold(
       body: SafeArea(
@@ -360,7 +364,12 @@ class _HomePageState extends State<HomePage> {
                                           GestureDetector(
                                             onTap: () {
                                               setState(() {
+                                                //courseData[index].isBookmarked = !courseData[index].isBookmarked;
+                                                // if (!courseModel.isBookmarked) {
+                                                //   provider.removeItem(courseModel);
+                                                // }
                                                 courseData[index].isBookmarked = !courseData[index].isBookmarked;
+                                                provider.addItem(courseModel);
                                               });
                                             },
                                             child: courseData[index].isBookmarked

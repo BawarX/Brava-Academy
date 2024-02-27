@@ -1,3 +1,4 @@
+import 'package:brava/api/api_service.dart';
 import 'package:brava/screen/authentication/log_in.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,12 @@ class SignUp_screen extends StatefulWidget {
 
 class _SignUp_screenState extends State<SignUp_screen> {
   bool isVisible = false;
-
+  ApiService service = ApiService();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController lastnameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     Color outlineColor = Theme.of(context).primaryColor;
@@ -51,17 +57,6 @@ class _SignUp_screenState extends State<SignUp_screen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // const Padding(
-                  //   padding: EdgeInsets.only(left: 10),
-                  //   child: Text(
-                  //     "Sign Ueep",
-                  //     style: TextStyle(
-                  //       fontSize: 30,
-                  //       fontWeight: FontWeight.w400,
-                  //       color: Colors.white,
-                  //     ),
-                  //   ),
-                  // ),
                   const Gap(20),
                   Row(
                     children: [
@@ -84,6 +79,7 @@ class _SignUp_screenState extends State<SignUp_screen> {
                                 const Gap(10),
                                 Expanded(
                                   child: TextField(
+                                    controller: nameController,
                                     style: TextStyle(
                                       color: outlineColor,
                                       fontSize: 18,
@@ -120,6 +116,7 @@ class _SignUp_screenState extends State<SignUp_screen> {
                                 const Gap(10),
                                 Expanded(
                                   child: TextField(
+                                    controller: lastnameController,
                                     style: TextStyle(
                                       color: outlineColor,
                                       fontSize: 18,
@@ -165,6 +162,7 @@ class _SignUp_screenState extends State<SignUp_screen> {
                             const Gap(10),
                             Expanded(
                               child: TextField(
+                                controller: emailController,
                                 style: TextStyle(
                                   color: outlineColor,
                                   fontSize: 18,
@@ -208,6 +206,7 @@ class _SignUp_screenState extends State<SignUp_screen> {
                             const Gap(10),
                             Expanded(
                               child: TextField(
+                                controller: passwordController,
                                 obscureText: true,
                                 //obscureText: !isVisible,
                                 style: TextStyle(
@@ -262,6 +261,7 @@ class _SignUp_screenState extends State<SignUp_screen> {
                             const Gap(10),
                             Expanded(
                               child: TextField(
+                                controller: confirmPasswordController,
                                 obscureText: true,
                                 style: TextStyle(
                                   color: outlineColor,
@@ -316,7 +316,7 @@ class _SignUp_screenState extends State<SignUp_screen> {
                   Center(
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUp_screen()));
+                        service.signUp(nameController.text, emailController.text, passwordController.text);
                       },
                       child: Container(
                         height: 45,

@@ -201,7 +201,7 @@ class _Login_screenState extends State<Login_screen> {
                 const Gap(25),
                 GestureDetector(
                   onTap: () {
-                    service.login(emailController.text);
+                    service.login();
                   },
                   child: Container(
                     height: 45,

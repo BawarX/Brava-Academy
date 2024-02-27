@@ -1,8 +1,14 @@
+import 'dart:convert';
+
+import 'package:brava/api/api_service.dart';
+import 'package:brava/model/login_model.dart';
+import 'package:brava/screen/Home/home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:http/http.dart' as http;
 
 class Login_screen extends StatefulWidget {
   const Login_screen({super.key});
@@ -13,13 +19,26 @@ class Login_screen extends StatefulWidget {
 
 class _Login_screenState extends State<Login_screen> {
   bool isVisisble = false;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  LoginRequestModel? requestModel;
+  ApiService service = ApiService();
+
+  @override
+  void initState() {
+    super.initState();
+    requestModel = LoginRequestModel(email: emailController.toString(), password: passwordController.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
     Color outlineColor = Theme.of(context).primaryColor;
     Color fillColor = Colors.white;
     Color textColor = Theme.of(context).primaryColor;
-    TextEditingController emailController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
+
+    // initState() {
+    //   requestModel = LoginRequestModel(email: emailController.text, password: passwordController.text)
+    // }
 
     return Scaffold(
       appBar: AppBar(
@@ -182,7 +201,7 @@ class _Login_screenState extends State<Login_screen> {
                 const Gap(25),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const Login_screen()));
+                    service.login(emailController.text);
                   },
                   child: Container(
                     height: 45,

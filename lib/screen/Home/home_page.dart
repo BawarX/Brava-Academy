@@ -364,12 +364,12 @@ class _HomePageState extends State<HomePage> {
                                           GestureDetector(
                                             onTap: () {
                                               setState(() {
-                                                //courseData[index].isBookmarked = !courseData[index].isBookmarked;
-                                                // if (!courseModel.isBookmarked) {
-                                                //   provider.removeItem(courseModel);
-                                                // }
                                                 courseData[index].isBookmarked = !courseData[index].isBookmarked;
-                                                provider.addItem(courseModel);
+                                                if (courseData[index].isBookmarked) {
+                                                  provider.addItem(courseModel);
+                                                } else {
+                                                  provider.removeItem(courseModel);
+                                                }
                                               });
                                             },
                                             child: courseData[index].isBookmarked

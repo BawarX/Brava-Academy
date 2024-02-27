@@ -25,9 +25,12 @@ class _NavBarState extends State<NavBar> {
     return Scaffold(
       body: navBody[navBarIndex],
       bottomNavigationBar: SizedBox(
-        height: 65,
         child: GNav(
-          tabBackgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: Theme.of(context).primaryColor,
+          activeColor: Colors.white,
+          iconSize: 24,
+          textSize: 10,
+          tabBackgroundColor: Colors.black,
           tabs: const [
             GButton(
               icon: Icons.home,

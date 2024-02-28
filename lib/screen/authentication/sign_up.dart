@@ -316,7 +316,7 @@ class _SignUp_screenState extends State<SignUp_screen> {
                   Center(
                     child: GestureDetector(
                       onTap: () {
-                        service.signUp(nameController.text, emailController.text, passwordController.text);
+                        service.signUp(nameController.text, lastnameController.text, emailController.text, passwordController.text);
                       },
                       child: Container(
                         height: 45,

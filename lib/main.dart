@@ -6,6 +6,7 @@ import 'package:brava/screen/Home/nav_bar.dart';
 import 'package:brava/screen/Home/profile.dart';
 import 'package:brava/screen/authentication/log_in.dart';
 import 'package:brava/screen/authentication/sign_up.dart';
+import 'package:brava/screen/authentication/start_screen.dart';
 import 'package:brava/screen/on_boarding/screen_1.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         debugShowCheckedModeBanner: false,
-        home: const Login_screen(),
+        home: const Screen1(),
       ),
     );
   }

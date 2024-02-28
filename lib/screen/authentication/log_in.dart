@@ -21,24 +21,14 @@ class _Login_screenState extends State<Login_screen> {
   bool isVisisble = false;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  LoginRequestModel? requestModel;
-  ApiService service = ApiService();
 
-  @override
-  void initState() {
-    super.initState();
-    requestModel = LoginRequestModel(email: emailController.toString(), password: passwordController.toString());
-  }
+  ApiService service = ApiService();
 
   @override
   Widget build(BuildContext context) {
     Color outlineColor = Theme.of(context).primaryColor;
     Color fillColor = Colors.white;
     Color textColor = Theme.of(context).primaryColor;
-
-    // initState() {
-    //   requestModel = LoginRequestModel(email: emailController.text, password: passwordController.text)
-    // }
 
     return Scaffold(
       appBar: AppBar(
@@ -201,7 +191,7 @@ class _Login_screenState extends State<Login_screen> {
                 const Gap(25),
                 GestureDetector(
                   onTap: () {
-                    service.login(emailController.text);
+                    service.login('65da2a12fcac44195a065697');
                   },
                   child: Container(
                     height: 45,

@@ -21,7 +21,7 @@ class _Login_screenState extends State<Login_screen> {
   Widget build(BuildContext context) {
     Color outlineColor = Theme.of(context).primaryColor;
     Color fillColor = Colors.white;
-    Color textColor = Theme.of(context).primaryColor;
+    // Color textColor = Theme.of(context).primaryColor;
 
     return Scaffold(
       appBar: AppBar(

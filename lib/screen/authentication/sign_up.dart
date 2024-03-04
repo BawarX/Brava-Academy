@@ -1,10 +1,9 @@
 import 'package:brava/api/api_service.dart';
 import 'package:brava/screen/authentication/log_in.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
+import 'package:quickalert/quickalert.dart';
 
 class SignUp_screen extends StatefulWidget {
   const SignUp_screen({super.key});
@@ -14,9 +13,10 @@ class SignUp_screen extends StatefulWidget {
 }
 
 class _SignUp_screenState extends State<SignUp_screen> {
+  final _formKey = GlobalKey<FormState>();
   bool isVisible = false;
   ApiService service = ApiService();
-  TextEditingController nameController = TextEditingController();
+  TextEditingController firstnameController = TextEditingController();
   TextEditingController lastnameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -34,13 +34,14 @@ class _SignUp_screenState extends State<SignUp_screen> {
           style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              Icons.arrow_back_ios,
-              color: fillColor,
-            )),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: fillColor,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -53,234 +54,53 @@ class _SignUp_screenState extends State<SignUp_screen> {
             ),
             const Gap(60),
             Form(
-              // add key and tartibat
+              key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Gap(20),
                   Row(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Container(
-                          height: 50,
-                          width: 170,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(30),
-                            border: Border.all(
-                              color: outlineColor,
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Row(
-                              children: [
-                                const Gap(10),
-                                Expanded(
-                                  child: TextField(
-                                    controller: nameController,
-                                    style: TextStyle(
-                                      color: outlineColor,
-                                      fontSize: 18,
-                                    ),
-                                    decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      hintText: "First Name",
-                                      hintStyle: TextStyle(
-                                        color: textColor,
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                      FirstNameAndLastNameCard(
+                        outlineColor: outlineColor,
+                        controller: firstnameController,
+                        textColor: textColor,
+                        hint: 'First Name',
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Container(
-                          height: 50,
-                          width: 170,
-                          decoration: BoxDecoration(
-                            color: fillColor,
-                            borderRadius: BorderRadius.circular(30),
-                            border: Border.all(color: outlineColor),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Row(
-                              children: [
-                                const Gap(10),
-                                Expanded(
-                                  child: TextField(
-                                    controller: lastnameController,
-                                    style: TextStyle(
-                                      color: outlineColor,
-                                      fontSize: 18,
-                                    ),
-                                    decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      hintText: "Last Name",
-                                      hintStyle: TextStyle(
-                                        color: textColor,
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                      FirstNameAndLastNameCard(
+                        outlineColor: outlineColor,
+                        controller: lastnameController,
+                        textColor: textColor,
+                        hint: 'Last Name',
                       ),
                     ],
                   ),
                   const Gap(15),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Container(
-                      height: 50,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: fillColor,
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: outlineColor),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Row(
-                          children: [
-                            const Gap(10),
-                            Icon(
-                              Icons.email_outlined,
-                              color: outlineColor,
-                              size: 29,
-                            ),
-                            const Gap(10),
-                            Expanded(
-                              child: TextField(
-                                controller: emailController,
-                                style: TextStyle(
-                                  color: outlineColor,
-                                  fontSize: 18,
-                                ),
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: "Email",
-                                  hintStyle: TextStyle(
-                                    color: textColor,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                  EmailAndPasswordAndConfirmPasswordCard(
+                    fillColor: fillColor,
+                    outlineColor: outlineColor,
+                    controller: emailController,
+                    textColor: textColor,
+                    icon: Icons.email_outlined,
+                    hint: 'Email',
                   ),
                   const Gap(10),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Container(
-                      height: 50,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: fillColor,
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: outlineColor),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Row(
-                          children: [
-                            const Gap(10),
-                            Icon(
-                              Icons.password_outlined,
-                              color: outlineColor,
-                              size: 29,
-                            ),
-                            const Gap(10),
-                            Expanded(
-                              child: TextField(
-                                controller: passwordController,
-                                obscureText: true,
-                                //obscureText: !isVisible,
-                                style: TextStyle(
-                                  color: outlineColor,
-                                  fontSize: 18,
-                                ),
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: "Password",
-                                  hintStyle: TextStyle(
-                                    color: textColor,
-                                    fontSize: 18,
-                                  ),
-                                  // suffixIcon: IconButton(
-                                  //   onPressed: () {
-                                  //     setState(() {
-                                  //       isVisible = !isVisible;
-                                  //     });
-                                  //   },
-                                  //   icon: Icon(isVisible ? Icons.visibility : Icons.visibility_off),
-                                  //   color: outlineColor,
-                                  // ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                  EmailAndPasswordAndConfirmPasswordCard(
+                    fillColor: fillColor,
+                    outlineColor: outlineColor,
+                    controller: passwordController,
+                    textColor: textColor,
+                    icon: Icons.password_outlined,
+                    hint: 'Confirm Password',
                   ),
                   const Gap(10),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Container(
-                      height: 50,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: fillColor,
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: outlineColor),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Row(
-                          children: [
-                            const Gap(10),
-                            Icon(
-                              Icons.password_outlined,
-                              color: outlineColor,
-                              size: 29,
-                            ),
-                            const Gap(10),
-                            Expanded(
-                              child: TextField(
-                                controller: confirmPasswordController,
-                                obscureText: true,
-                                style: TextStyle(
-                                  color: outlineColor,
-                                  fontSize: 18,
-                                ),
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: "Confirm Password",
-                                  hintStyle: TextStyle(
-                                    color: textColor,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                  EmailAndPasswordAndConfirmPasswordCard(
+                    fillColor: fillColor,
+                    outlineColor: outlineColor,
+                    controller: confirmPasswordController,
+                    textColor: textColor,
+                    icon: Icons.password_outlined,
+                    hint: 'Confirm Password',
                   ),
                   const Gap(10),
                   Row(
@@ -299,7 +119,10 @@ class _SignUp_screenState extends State<SignUp_screen> {
                       const Gap(10),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const Login_screen()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const Login_screen()));
                         },
                         child: Text(
                           "Login",
@@ -316,7 +139,35 @@ class _SignUp_screenState extends State<SignUp_screen> {
                   Center(
                     child: GestureDetector(
                       onTap: () {
-                        service.signUp(nameController.text, lastnameController.text, emailController.text, passwordController.text);
+                        if (firstnameController.text.isEmpty ||
+                            lastnameController.text.isEmpty ||
+                            emailController.text.isEmpty ||
+                            passwordController.text.isEmpty ||
+                            confirmPasswordController.text.isEmpty) {
+                          QuickAlert.show(
+                              context: context,
+                              type: QuickAlertType.error,
+                              text: "Please fill all fields");
+                          return;
+                        } else {
+                          if (passwordController.text !=
+                              confirmPasswordController.text) {
+                            QuickAlert.show(
+                                context: context,
+                                type: QuickAlertType.error,
+                                title: 'SomeThing Went Wrong',
+                                text:
+                                    'Password and Confirm Password Don\'t match',
+                                autoCloseDuration: const Duration(seconds: 3));
+                            return;
+                          }
+                          service.signUp(
+                              firstnameController.text,
+                              lastnameController.text,
+                              emailController.text,
+                              passwordController.text,
+                              context);
+                        }
                       },
                       child: Container(
                         height: 45,
@@ -342,6 +193,129 @@ class _SignUp_screenState extends State<SignUp_screen> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class EmailAndPasswordAndConfirmPasswordCard extends StatelessWidget {
+  const EmailAndPasswordAndConfirmPasswordCard({
+    super.key,
+    required this.fillColor,
+    required this.outlineColor,
+    required this.controller,
+    required this.textColor,
+    required this.hint,
+    required this.icon,
+  });
+
+  final Color fillColor;
+  final Color outlineColor;
+  final TextEditingController controller;
+  final Color textColor;
+  final String hint;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Container(
+        height: 50,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: fillColor,
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: outlineColor),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Row(
+            children: [
+              const Gap(10),
+              Icon(
+                icon,
+                color: outlineColor,
+                size: 29,
+              ),
+              const Gap(10),
+              Expanded(
+                child: TextField(
+                  controller: controller,
+                  style: TextStyle(
+                    color: outlineColor,
+                    fontSize: 18,
+                  ),
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: hint,
+                    hintStyle: TextStyle(
+                      color: textColor,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class FirstNameAndLastNameCard extends StatelessWidget {
+  const FirstNameAndLastNameCard({
+    super.key,
+    required this.outlineColor,
+    required this.controller,
+    required this.textColor,
+    required this.hint,
+  });
+  final String hint;
+  final Color outlineColor;
+  final TextEditingController controller;
+  final Color textColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Container(
+        height: 50,
+        width: 170,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(
+            color: outlineColor,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Row(
+            children: [
+              const Gap(10),
+              Expanded(
+                child: TextField(
+                  controller: controller,
+                  style: TextStyle(
+                    color: outlineColor,
+                    fontSize: 18,
+                  ),
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: hint,
+                    hintStyle: TextStyle(
+                      color: textColor,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

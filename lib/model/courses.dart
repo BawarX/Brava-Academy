@@ -18,4 +18,16 @@ class CourseModel {
     required this.image,
     required this.description,
   });
+
+  static CourseModel fromJson(e) {
+    return CourseModel(
+        id: 1,
+        rank: e['numberOfStudents'].toString(),
+        courseTitle: e['name'],
+        duration: '15',
+        price: e['price'].toString(),
+        isBookmarked: true,
+        image: 'assets/images/course1.png',
+        description: e['description']);
+  }
 }

@@ -21,6 +21,7 @@ class _SignUp_screenState extends State<SignUp_screen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     Color outlineColor = Theme.of(context).primaryColor;
@@ -53,7 +54,7 @@ class _SignUp_screenState extends State<SignUp_screen> {
             ),
             const Gap(60),
             Form(
-              // add key and tartibat
+              key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -78,7 +79,13 @@ class _SignUp_screenState extends State<SignUp_screen> {
                               children: [
                                 const Gap(10),
                                 Expanded(
-                                  child: TextField(
+                                  child: TextFormField(
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Please enter your name';
+                                      }
+                                      return null;
+                                    },
                                     controller: nameController,
                                     style: TextStyle(
                                       color: outlineColor,
@@ -115,7 +122,13 @@ class _SignUp_screenState extends State<SignUp_screen> {
                               children: [
                                 const Gap(10),
                                 Expanded(
-                                  child: TextField(
+                                  child: TextFormField(
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Please enter your last name';
+                                      }
+                                      return null;
+                                    },
                                     controller: lastnameController,
                                     style: TextStyle(
                                       color: outlineColor,
@@ -161,7 +174,13 @@ class _SignUp_screenState extends State<SignUp_screen> {
                             ),
                             const Gap(10),
                             Expanded(
-                              child: TextField(
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please enter your email';
+                                  }
+                                  return null;
+                                },
                                 controller: emailController,
                                 style: TextStyle(
                                   color: outlineColor,
@@ -205,7 +224,13 @@ class _SignUp_screenState extends State<SignUp_screen> {
                             ),
                             const Gap(10),
                             Expanded(
-                              child: TextField(
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please enter your password';
+                                  }
+                                  return null;
+                                },
                                 controller: passwordController,
                                 obscureText: true,
                                 //obscureText: !isVisible,
@@ -260,7 +285,14 @@ class _SignUp_screenState extends State<SignUp_screen> {
                             ),
                             const Gap(10),
                             Expanded(
-                              child: TextField(
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'confirm password required';
+                                  } else {
+                                    return null;
+                                  }
+                                },
                                 controller: confirmPasswordController,
                                 obscureText: true,
                                 style: TextStyle(
@@ -298,9 +330,7 @@ class _SignUp_screenState extends State<SignUp_screen> {
                       ),
                       const Gap(10),
                       GestureDetector(
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const Login_screen()));
-                        },
+                        onTap: () {},
                         child: Text(
                           "Login",
                           style: TextStyle(
@@ -316,7 +346,15 @@ class _SignUp_screenState extends State<SignUp_screen> {
                   Center(
                     child: GestureDetector(
                       onTap: () {
-                        service.signUp(nameController.text, lastnameController.text, emailController.text, passwordController.text);
+                        if (_formKey.currentState!.validate()) {
+                          service.signUp(
+                            firstname: nameController.text,
+                            lastname: lastnameController.text,
+                            email: emailController.text,
+                            password: passwordController.text,
+                            context: context,
+                          );
+                        }
                       },
                       child: Container(
                         height: 45,

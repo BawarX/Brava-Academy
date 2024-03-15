@@ -8,8 +8,8 @@ import 'package:flutter_social_button/flutter_social_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 
-class Screen1 extends StatelessWidget {
-  const Screen1({super.key});
+class InitialPages extends StatelessWidget {
+  const InitialPages({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "606480576114",
+    "project_id": "brava-academy",
+    "storage_bucket": "brava-academy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:606480576114:android:d451434f4dbadcde819ceb",
+        "android_client_info": {
+          "package_name": "com.example.brava"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0_Ojy8JKBem1KXHGeWPwCGWKoXW3xL6k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

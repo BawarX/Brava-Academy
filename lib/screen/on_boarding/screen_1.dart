@@ -78,7 +78,7 @@ class _OnBoarding_1State extends State<OnBoarding_1> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const Screen1(),
+                      builder: (context) => const InitialPages(),
                     ),
                   );
                 }

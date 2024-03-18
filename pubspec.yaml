@@ -43,9 +43,14 @@ dependencies:
   provider: ^6.1.1
   image_picker: ^1.0.7
   http: ^1.2.0
-  video_player: ^2.8.2
+  video_player: ^2.8.3
   quickalert: ^1.0.2
   shared_preferences: ^2.2.2
+  firebase_core: ^2.27.1
+  firebase_storage: ^11.6.10
+  random_string: ^2.3.1
+  flick_video_player: ^0.7.0
+  firebase_app_check: ^0.2.1+18
 
 dev_dependencies:
   flutter_test:

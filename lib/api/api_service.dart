@@ -19,6 +19,7 @@ class ApiService {
     if (!await isEmailAndPasswordValid(email, password, context)) {
       return;
     }
+    print('login======================>');
     try {
       var url = Uri.parse('http://10.0.2.2:3000/user/get-user-by-email/$email');
       final response = await http.get(
@@ -50,6 +51,7 @@ class ApiService {
               ),
               (route) => false,
             );
+            print('hi');
           } else {
             await showQuickAlert(
                 title: 'Something  Wrong!',

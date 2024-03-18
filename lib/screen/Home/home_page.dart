@@ -6,7 +6,7 @@ import 'package:brava/data/course_data.dart';
 import 'package:brava/data/instructor_data.dart';
 import 'package:brava/model/courses.dart';
 import 'package:brava/provider/bookmark.dart';
-import 'package:brava/screen/Home/add_course.dart';
+import 'package:brava/screen/Home/add-course-page/add_course.dart';
 import 'package:brava/screen/Home/course_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -27,7 +27,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchData();
   }

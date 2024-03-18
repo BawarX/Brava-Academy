@@ -1,13 +1,19 @@
 import 'package:brava/constant.dart';
+import 'package:brava/firebase_options.dart';
 import 'package:brava/provider/bookmark.dart';
+import 'package:brava/provider/input_field_provider.dart';
 import 'package:brava/screen/Home/home_page.dart';
 import 'package:brava/screen/authentication/start_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   sharedPreferences = await GetSharedprefrence();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   print(sharedPreferences.getBool('isLogin'));
   runApp(const MyApp());
 }
@@ -22,11 +28,13 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => BookmarkProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => SettingsProvider(),
+        ),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          //primaryColor: const
           primaryColor: const Color.fromARGB(255, 106, 90, 223),
           scaffoldBackgroundColor: const Color.fromARGB(255, 255, 251, 245),
           textTheme: const TextTheme(

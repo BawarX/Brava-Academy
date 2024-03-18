@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 
 class UserProvider extends ChangeNotifier {
-  String _username = '';
+  String _firstName = '';
+  String _lastName = '';
   String _imageUrl = '';
   String _email = '';
 
-  String get username => _username;
+  String get firstName => _firstName;
+  String get lastName => _lastName;
   String get imageUrl => _imageUrl;
   String get email => _email;
 
-  void setUser({required String username, required String imageUrl, required String email}) {
-    _username = username;
+  void setUser({required String firstName, required String lastName, required String imageUrl, required String email}) {
+    _firstName = firstName;
+    _lastName = lastName;
     _imageUrl = imageUrl;
     _email = email;
     notifyListeners();

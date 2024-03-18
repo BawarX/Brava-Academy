@@ -1,6 +1,8 @@
 import 'package:brava/api/api_service.dart';
 import 'package:brava/model/courses.dart';
+import 'package:brava/screen/Home/VideoList/play_video.dart';
 import 'package:brava/screen/Home/VideoList/video_list.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -42,11 +44,15 @@ class CourseDetail extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(25),
-                child: Image.network(
-                  course.backgroundImage,
-                  width: 400,
+              SizedBox(
+                height: 250,
+                width: double.infinity,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(25),
+                  child: Image.network(
+                    course.backgroundImage,
+                    fit: BoxFit.fill,
+                  ),
                 ),
               ),
               const Gap(5),
@@ -100,65 +106,127 @@ class CourseDetail extends StatelessWidget {
               ),
               const Gap(10),
               const Text("Lessons"),
-              Expanded(
-                  child: ListView.builder(
-                itemCount: course.videos.length,
-                itemBuilder: (context, index) {
-                  return course.videos.isEmpty
-                      ? Center(
-                          child: Column(
-                            children: [
-                              const Text("No videos available"),
-                              SvgPicture.asset('assets/svg/no_videos.svg'),
-                            ],
-                          ),
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              //  videoPreviewWidget();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const VideoList()),
+              StreamBuilder(
+                stream: FirebaseFirestore.instance.collection('videos').snapshots(),
+                builder: ((context, snapshot) {
+                  List<Padding> videoWidgets = [];
+                  if (!snapshot.hasData) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    final videos = snapshot.data?.docs.reversed.toList();
+                    for (var video in videos!) {
+                      final videoWidget = Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                              return PlayVideo(
+                                videoURL: video['url'],
+                                videoName: video['name'],
                               );
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              height: 70,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: const BorderRadius.all(Radius.circular(15)),
-                                  border: Border.all(
-                                    color: Colors.grey,
-                                  )),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  Container(
-                                    width: 38,
-                                    height: 38,
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).primaryColor,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: const Icon(Icons.play_arrow),
+                            }));
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            height: 70,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: const BorderRadius.all(Radius.circular(15)),
+                                border: Border.all(
+                                  color: Colors.grey,
+                                )),
+                            child: Row(
+                              children: [
+                                const Gap(15),
+                                Container(
+                                  width: 38,
+                                  height: 38,
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                    shape: BoxShape.circle,
                                   ),
-                                  Text(
-                                    course.videos[index],
-                                    style: const TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  const Text(
-                                    "10:15",
-                                    style: TextStyle(fontWeight: FontWeight.bold),
-                                  )
-                                ],
-                              ),
+                                  child: const Icon(Icons.play_arrow),
+                                ),
+                                const Gap(15),
+                                Text(
+                                  video['name'],
+                                ),
+                              ],
                             ),
                           ),
-                        );
-                },
-              ))
+                        ),
+                      );
+                      videoWidgets.add(videoWidget);
+                    }
+                  }
+                  return Expanded(
+                      child: ListView(
+                    children: videoWidgets,
+                  ));
+                }),
+              ),
+              // Expanded(
+              //   child: ListView.builder(
+              //     itemCount: course.videos.length,
+              //     itemBuilder: (context, index) {
+              //       return course.videos.isEmpty
+              //           ? Center(
+              //               child: Column(
+              //                 children: [
+              //                   const Text("No videos available"),
+              //                   SvgPicture.asset('assets/svg/no_videos.svg'),
+              //                 ],
+              //               ),
+              //             )
+              //           : Padding(
+              //               padding: const EdgeInsets.all(8.0),
+              //               child: GestureDetector(
+              //                 onTap: () {
+              //                   //  videoPreviewWidget();
+              //                   Navigator.push(
+              //                     context,
+              //                     MaterialPageRoute(builder: (context) => const VideoList()),
+              //                   );
+              //                 },
+              //                 child: Container(
+              //                   width: double.infinity,
+              //                   height: 70,
+              //                   decoration: BoxDecoration(
+              //                       color: Colors.white,
+              //                       borderRadius: const BorderRadius.all(Radius.circular(15)),
+              //                       border: Border.all(
+              //                         color: Colors.grey,
+              //                       )),
+              //                   child: Row(
+              //                     mainAxisAlignment: MainAxisAlignment.spaceAround,
+              //                     children: [
+              //                       Container(
+              //                         width: 38,
+              //                         height: 38,
+              //                         decoration: BoxDecoration(
+              //                           color: Theme.of(context).primaryColor,
+              //                           shape: BoxShape.circle,
+              //                         ),
+              //                         child: const Icon(Icons.play_arrow),
+              //                       ),
+              //                       Text(
+              //                         course.videos[index],
+              //                         style: const TextStyle(fontWeight: FontWeight.bold),
+              //                       ),
+              //                       const Text(
+              //                         "10:15",
+              //                         style: TextStyle(fontWeight: FontWeight.bold),
+              //                       )
+              //                     ],
+              //                   ),
+              //                 ),
+              //               ),
+              //             );
+              //     },
+              //   ),
+              // )
             ],
           ),
         ),

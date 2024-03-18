@@ -10,15 +10,19 @@ import 'package:brava/screen/authentication/log_in.dart';
 import 'package:brava/screen/authentication/sign_up.dart';
 import 'package:brava/screen/authentication/start_screen.dart';
 import 'package:brava/screen/on_boarding/screen_1.dart';
-import 'package:brava/wrapper.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() async {
+Future<void> main() async {
+  await Hive.initFlutter();
+  await Hive.openBox('bookmark');
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences preferences = await SharedPreferences.getInstance();
   var email = preferences.getString('email');

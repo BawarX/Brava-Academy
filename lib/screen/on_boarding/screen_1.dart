@@ -1,4 +1,4 @@
-import 'package:brava/data/on_boarding_data.dart';
+import 'package:brava/api/data/on_boarding_data.dart';
 import 'package:brava/screen/authentication/start_screen.dart';
 
 import 'package:flutter/cupertino.dart';

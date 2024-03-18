@@ -1,12 +1,17 @@
 import 'dart:io';
 
+import 'package:brava/api/api_service.dart';
+import 'package:brava/provider/user.dart';
 import 'package:brava/screen/Home/resources/save_video.dart';
 import 'package:brava/widget/utils.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
 class AddMyCourse extends StatefulWidget {
@@ -18,15 +23,22 @@ class AddMyCourse extends StatefulWidget {
 
 class _AddMyCourseState extends State<AddMyCourse> {
   String? _videoUrl;
+  String? imageDownloadUrl;
   VideoPlayerController? _controller;
   String? _downloadUrl;
+  File? selectedImage;
+  UploadTask? uploadTask;
   final TextEditingController _controllerTitle = TextEditingController();
   final TextEditingController _controllerDescription = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final ApiService _service = ApiService();
+  String? id;
 
   @override
   void dispose() {
     _controller?.dispose();
+    _controllerTitle.dispose();
+    _controllerDescription.dispose();
     super.dispose();
   }
 
@@ -63,6 +75,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
 
   Future _pickImageFromGallery() async {
     final returnedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+
     if (returnedImage == null) return;
     setState(() {
       selectedImage = File(returnedImage.path);
@@ -75,6 +88,41 @@ class _AddMyCourseState extends State<AddMyCourse> {
     setState(() {
       _videoUrl = null;
     });
+  }
+
+  Future<void> _uploadImage() async {
+    //final path = 'images/${DateTime.now()}';
+    const path = 'images/image1.jpg';
+    final file = File(selectedImage!.path);
+
+    final ref = FirebaseStorage.instance.ref().child(path);
+    uploadTask = ref.putFile(file);
+
+    // final snapshot = await uploadTask!.whenComplete(() {});
+    // final urlDownload = await snapshot.ref.getDownloadURL();
+    await uploadTask!.whenComplete(() {});
+
+    final snapshot = await ref.getDownloadURL();
+    if (snapshot.isNotEmpty) {
+      imageDownloadUrl = snapshot;
+      print("Image download URL: ${imageDownloadUrl.toString()}");
+    } else {
+      print("Error: Download URL is null or empty");
+    }
+  }
+
+  Future getEmail() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    setState(() {
+      id = preferences.getString('_id')!;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getEmail();
   }
 
   Widget _videoPreviewWidget() {
@@ -99,7 +147,6 @@ class _AddMyCourseState extends State<AddMyCourse> {
     }
   }
 
-  File? selectedImage;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -273,6 +320,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
                   ),
                 ),
               ),
+
               Padding(
                 padding: const EdgeInsets.all(10),
                 child: GestureDetector(
@@ -310,11 +358,18 @@ class _AddMyCourseState extends State<AddMyCourse> {
 
               const Gap(10),
               GestureDetector(
-                onTap: () {
-                  if (_formKey.currentState!.validate() && _videoUrl != null && selectedImage != null) {
-                    print('validated');
+                onTap: () async {
+                  if (_formKey.currentState!.validate() && _videoUrl != null && selectedImage != null && _controller != null) {
+                    _uploadVideo();
+                    await Future.delayed(const Duration(seconds: 5));
+                    await _uploadImage();
+                    bool courseAdded = await _service.addCourse(_controllerTitle.text, _controllerDescription.text, [_videoUrl.toString()], 2, 150, id.toString(), imageDownloadUrl.toString(), context);
+
+                    if (courseAdded) {
+                      print("course added***********************************************************************${imageDownloadUrl.toString()}");
+                    }
                   } else {
-                    print("form is not valid");
+                    print("form is not valid***********************************************************************");
                   }
                 },
                 child: Container(
@@ -338,7 +393,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
                   ),
                 ),
               ),
-              // const Gap(100),
+              const Gap(100),
               // Container(
               //   width: double.infinity,
               //   height: 300,

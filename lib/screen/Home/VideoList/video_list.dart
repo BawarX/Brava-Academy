@@ -13,9 +13,6 @@ class _VideoListState extends State<VideoList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("video list"),
-      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(15.0),

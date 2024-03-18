@@ -34,17 +34,19 @@ class _PlayVideoState extends State<PlayVideo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Play Video'),
+        title: Text(widget.videoName),
       ),
       body: Center(
         child: Column(
           children: [
-            AspectRatio(
-              aspectRatio: _controller.value.aspectRatio,
-              child: VideoPlayer(_controller),
+            SizedBox(
+              height: 600,
+              width: double.infinity,
+              child: AspectRatio(
+                aspectRatio: _controller.value.aspectRatio,
+                child: VideoPlayer(_controller),
+              ),
             ),
-            const Gap(20),
-            Text(widget.videoName),
           ],
         ),
       ),

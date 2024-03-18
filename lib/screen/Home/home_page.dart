@@ -4,8 +4,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:brava/api/api_service.dart';
 import 'package:brava/model/author.dart';
 import 'package:brava/screen/Home/course_detail.dart';
+import 'package:brava/screen/Home/profile.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
-import 'package:brava/data/instructor_data.dart';
+import 'package:brava/api/data/instructor_data.dart';
 import 'package:brava/model/courses.dart';
 import 'package:brava/provider/bookmark.dart';
 import 'package:brava/provider/user.dart';
@@ -24,26 +26,46 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   ApiService serivce = ApiService();
-  List<int> bookmarkedIndices = [];
+  static const likedKey = 'Liked_key';
+
+  late bool liked = false;
 
   @override
   void initState() {
     super.initState();
     getUserData();
+    _restorePersistedPreference();
+  }
+
+  void _restorePersistedPreference() async {
+    var preferences = await SharedPreferences.getInstance();
+    var liked = preferences.getBool(likedKey);
+    setState(() {
+      this.liked = liked!;
+    });
+  }
+
+  void _persistPreference() async {
+    setState(() {
+      liked = liked;
+    });
+    var preferences = await SharedPreferences.getInstance();
+    preferences.setBool(likedKey, liked);
   }
 
   void getUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String email = prefs.getString('email') ?? '';
-    String userName = prefs.getString('username') ?? '';
+    String firstName = prefs.getString('firstname') ?? '';
+    String lastName = prefs.getString('lastname') ?? '';
     String imageUrl = prefs.getString('imageUrl') ?? '';
-    context.read<UserProvider>().setUser(username: userName, imageUrl: imageUrl, email: email);
+    context.read<UserProvider>().setUser(firstName: firstName, imageUrl: imageUrl, email: email, lastName: lastName);
   }
 
   @override
   Widget build(BuildContext context) {
     String email = context.watch<UserProvider>().email;
-    String userNmae = context.watch<UserProvider>().username;
+    String firstName = context.watch<UserProvider>().firstName;
     String imageUrl = context.watch<UserProvider>().imageUrl;
 
     final bookmarkProvider = Provider.of<BookmarkProvider>(context, listen: true);
@@ -58,15 +80,20 @@ class _HomePageState extends State<HomePage> {
               Row(
                 children: [
                   const Gap(10),
-                  CircleAvatar(
-                    backgroundImage: NetworkImage(imageUrl),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileScreen()));
+                    },
+                    child: CircleAvatar(
+                      backgroundImage: imageUrl.isNotEmpty ? NetworkImage(imageUrl) : null,
+                    ),
                   ),
                   const Gap(5),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Hi $userNmae",
+                        "Hi $firstName",
                         style: const TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
@@ -138,24 +165,24 @@ class _HomePageState extends State<HomePage> {
               const Gap(15),
               Column(
                 children: [
-                  Row(
+                  const Row(
                     children: [
-                      const Text(
+                      Text(
                         "Top Instructor",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
                         ),
                       ),
-                      const Spacer(),
-                      const Text(
-                        "See All",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        color: Theme.of(context).primaryColor,
-                      )
+                      Spacer(),
+                      // const Text(
+                      //   "See All",
+                      //   style: TextStyle(color: Colors.grey),
+                      // ),
+                      // Icon(
+                      //   Icons.arrow_forward_ios,
+                      //   color: Theme.of(context).primaryColor,
+                      // )
                     ],
                   ),
                   //TODO: move to person profile
@@ -165,59 +192,67 @@ class _HomePageState extends State<HomePage> {
                       future: serivce.getCourse(),
                       builder: (context, snapshot) {
                         final courses = snapshot.data;
-                        return ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 3,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                              child: Column(
-                                children: [
-                                  CircleAvatar(
-                                    backgroundImage: NetworkImage('${courses![index].author!.image}'),
-                                  ),
-                                  Text(
-                                    '${courses[index].author!.firstname}',
-                                    style: const TextStyle(
-                                      color: Colors.grey,
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasData) {
+                          return ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: 3,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                child: Column(
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundImage: NetworkImage('${courses![index].author!.image}'),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        );
+                                    Text(
+                                      courses[index].author!.firstname ?? "unkown user",
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        } else {
+                          return const Center(child: Text("No Data"));
+                        }
                       },
                     ),
                   ),
                 ],
               ),
               const Gap(5),
-              Row(
+              const Row(
                 children: [
-                  const Text(
+                  Text(
                     "Top Courses",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
                     ),
                   ),
-                  const Spacer(),
-                  const Text(
-                    "See All",
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    color: Theme.of(context).primaryColor,
-                  )
+                  Spacer(),
+                  // const Text(
+                  //   "See All",
+                  //   style: TextStyle(color: Colors.grey),
+                  // ),
+                  // Icon(
+                  //   Icons.arrow_forward_ios,
+                  //   color: Theme.of(context).primaryColor,
+                  // )
                 ],
               ),
               Expanded(
                 child: FutureBuilder<List<Course>>(
                   future: serivce.getCourse(),
                   builder: ((context, snapshot) {
-                    if (snapshot.hasData) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Text('waiting');
+                    } else if (snapshot.hasData) {
                       final courses = snapshot.data!;
                       return GridView.builder(
                         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisExtent: 220),
@@ -308,23 +343,16 @@ class _HomePageState extends State<HomePage> {
                                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                               children: [
                                                 GestureDetector(
-                                                  onTap: () {
-                                                    setState(
-                                                      () {
-                                                        if (!bookmarkProvider.isBookmarked(courseModel)) {
-                                                          bookmarkProvider.addItem(courseModel);
-                                                          print('item added');
-                                                        } else {
-                                                          bookmarkProvider.removeItem(courseModel);
-                                                          print('item removed');
-                                                        }
-                                                      },
-                                                    );
-                                                  },
-                                                  child: Icon(
-                                                    bookmarkProvider.isBookmarked(courseModel) ? Icons.bookmark : Icons.bookmark_outline,
-                                                  ),
-                                                ),
+                                                    onTap: () {
+                                                      // if (liked) {
+                                                      //   bookmarkProvider.removeItem(courseModel);
+                                                      // } else {
+                                                      //   bookmarkProvider.addItem(courseModel);
+                                                      // }
+                                                    },
+                                                    child: Icon(
+                                                      liked ? Icons.bookmark : Icons.bookmark_border,
+                                                    )),
                                               ],
                                             ),
                                           ),
@@ -365,12 +393,15 @@ class _HomePageState extends State<HomePage> {
                           );
                         },
                       );
-                    } else if (snapshot.hasError) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
                     } else {
-                      return const Text("something is compeletly wrong");
+                      return const Column(
+                        children: [
+                          Text("Problem in our side server Error:404"),
+                          Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ],
+                      );
                     }
                   }),
                 ),

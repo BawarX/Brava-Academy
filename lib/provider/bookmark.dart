@@ -15,7 +15,7 @@ class BookmarkProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool isBookmarked(Course courseCart) {
-    return _cards.contains(courseCart);
+  bool isBookmarked(Course course) {
+    return _cards.contains(course);
   }
 }

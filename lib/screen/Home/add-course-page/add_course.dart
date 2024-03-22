@@ -3,6 +3,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:brava/api/api_service.dart';
 import 'package:brava/input_field.dart';
 import 'package:brava/model/video_model.dart';
 import 'package:brava/provider/input_field_provider.dart';
@@ -35,7 +36,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
         await ImagePicker().pickVideo(source: ImageSource.gallery);
     if (returnedVideo == null) return;
     setState(() {
-      selectedVideos.add({video: File(returnedVideo.path)});
+      selectedVideos[video] = File(returnedVideo.path);
     });
   }
 
@@ -52,24 +53,22 @@ class _AddMyCourseState extends State<AddMyCourse> {
     print('backgroundurl =========================> $backgroundImageUrl');
   }
 
-  Future uploadCourseVideos(File file) async {
+  Future uploadCourseVideos(File file, int index, String videoname) async {
     if (selectedVideos.isNotEmpty) {
-      for (int i = 0; i < selectedVideos.length; i++) {
-        String addID = randomAlphaNumeric(10);
-        Reference FirebaseStorageref = FirebaseStorage.instance
-            .ref()
-            .child('courseVideos')
-            .child(courseNameController.text)
-            .child('$addID.mp4');
-        final UploadTask task = FirebaseStorageref.putFile(file);
-        controllers[i].videoUrl = await (await task).ref.getDownloadURL();
-      }
+      String addID = randomAlphaNumeric(10);
+      Reference FirebaseStorageref = FirebaseStorage.instance
+          .ref()
+          .child('courseVideos')
+          .child(courseNameController.text)
+          .child('$videoname-$addID.mp4');
+      final UploadTask task = FirebaseStorageref.putFile(file);
+      controllers[index].videoUrl = await (await task).ref.getDownloadURL();
     }
   }
 
   final provider = SettingsProvider();
   File? selectedImage;
-  List<Map<String, File>> selectedVideos = [];
+  Map<String, File> selectedVideos = {};
   final _formkey = GlobalKey<FormState>();
   int numberOfVideos = 1;
   String? backgroundImageUrl;
@@ -255,7 +254,6 @@ class _AddMyCourseState extends State<AddMyCourse> {
                   ],
                 ),
               ),
-
               //videos title field and selected videos button
               for (int i = 0; i < numberOfVideos; i++)
                 CardOfVideoTitleAndSelectVideo(
@@ -263,19 +261,43 @@ class _AddMyCourseState extends State<AddMyCourse> {
                   controller: controllers[i].videoTitle,
                   validator: (value) => provider.videoTitleValidator(value),
                   ontap: () async {
-                    await _pickVideoFromGallery('video$numberOfVideos');
-                    print(selectedVideos[i]);
+                    await _pickVideoFromGallery('video${i + 1}');
+                  },
+                  deleteButtonOnTap: () async {
+                    setState(() {
+                      controllers.removeAt(i);
+                      numberOfVideos--;
+                      var removedata = selectedVideos.remove('video${i + 1}');
+                      Map<String, File> newmap = {};
+                      int k = 1;
+                      selectedVideos.keys.toList().forEach((element) {
+                        newmap.addAll({
+                          '${element.substring(0, 5)}$k':
+                              selectedVideos[element]!,
+                        });
+                        k++;
+                      });
+                      selectedVideos = newmap;
+                      print(removedata);
+                    });
                   },
                   video: selectedVideos.length > i
-                      ? selectedVideos[i]['video$i']
+                      ? selectedVideos['video${i + 1}']
                       : null,
                 ),
-
               const Gap(10),
 
               //publish Button
               GestureDetector(
                 onTap: () async {
+                  if (numberOfVideos == 0) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('At least 1 video must be added'),
+                      ),
+                    );
+                    return;
+                  }
                   if (selectedImage == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -284,48 +306,52 @@ class _AddMyCourseState extends State<AddMyCourse> {
                     );
                     return;
                   }
-                  // for (int i = 0; i < numberOfVideos; i++) {
-                  //   if (numberOfVideos > selectedVideos.length) {
-                  //     ScaffoldMessenger.of(context).showSnackBar(
-                  //       SnackBar(
-                  //         content: Text(
-                  //             'Please Selecte the  Video number $numberOfVideos'),
-                  //       ),
-                  //     );
-                  //     return;
-                  //   }
-                  //   if (selectedVideos.length) {
-                  //     ScaffoldMessenger.of(context).showSnackBar(
-                  //       SnackBar(
-                  //         content:
-                  //             Text('Please Selecte the  Video number ${i + 1}'),
-                  //       ),
-                  //     );
-                  //     return;
-                  //   }
-                  // }
+
                   if (_formkey.currentState!.validate()) {
-                    await uploadBackgroundImage();
-                    print(selectedVideos.toString());
-                    for (int i = 0; i < selectedVideos.length; i++) {
-                      await uploadCourseVideos(
-                          selectedVideos[i]['video${i + 1}'] as File);
-                      log('Uploaded===========================> video${i + 1}');
+                    if (numberOfVideos != selectedVideos.length) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please Selecte All the Video'),
+                        ),
+                      );
+                      return;
+                    } else {
+                      showDialog(
+                          context: context,
+                          builder: (Context) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          });
+                      await uploadBackgroundImage();
+                      for (int i = 0; i < numberOfVideos; i++) {
+                        await uploadCourseVideos(
+                            selectedVideos['video${i + 1}'] as File,
+                            i,
+                            controllers[i].videoTitle.text);
+                        log('upload=================================>$i');
+                      }
+
+                      Map<String, dynamic> course = {
+                        'backgroundImage': backgroundImageUrl,
+                        'name': courseNameController.text,
+                        'description': courseDescriptionController.text,
+                        'author': '65da3e9a03319490bcc5b81c',
+                        'videos': [
+                          for (int i = 0; i < numberOfVideos; i++)
+                            {
+                              'video${i + 1} title':
+                                  controllers[i].videoTitle.text,
+                              'video${i + 1} url': controllers[i].videoUrl,
+                            }
+                        ],
+                        'price': 15,
+                        'numberOfStudents': 0,
+                      };
+                      print(course);
+                      await ApiService.addCourse(course);
+                      Navigator.pop(context);
                     }
-                    Map<String, dynamic> course = {
-                      'coursebackground': backgroundImageUrl,
-                      'courseName': courseNameController.text,
-                      'courseDescription': courseDescriptionController.text,
-                      'videos': [
-                        for (int i = 0; i < numberOfVideos; i++)
-                          {
-                            'video${i + 1} title':
-                                controllers[i].videoTitle.text,
-                            'video${i + 1} url': controllers[i].videoUrl,
-                          }
-                      ]
-                    };
-                    print(course);
                   } else {
                     provider.showSnackBar('Fix the Error', context);
                   }

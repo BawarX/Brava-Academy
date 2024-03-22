@@ -134,6 +134,15 @@ class ApiService {
     }
     return;
   }
+
+  static addCourse(Map<String, dynamic> courseData) async {
+    var res = await http
+        .post(Uri.parse('http://192.168.1.5:3000/course/add-course'), body: {
+      'data': jsonEncode(courseData),
+    });
+    var body = jsonDecode(res.body);
+    print(body);
+  }
 }
 
 Future<void> showQuickAlert(

@@ -1,5 +1,4 @@
 import 'package:brava/screen/Home/bookmarked_course.dart';
-import 'package:brava/screen/Home/course_detail.dart';
 import 'package:brava/screen/Home/home_page.dart';
 import 'package:brava/screen/Home/profile.dart';
 import 'package:flutter/cupertino.dart';

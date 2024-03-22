@@ -1,5 +1,3 @@
-import 'package:brava/screen/Home/bookmarked_course.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -45,11 +43,15 @@ class ProfileScreen extends StatelessWidget {
                   children: [
                     Text(
                       "Courses",
-                      style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
                     ),
                     Text(
                       courseNumber,
-                      style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColor),
+                      style: TextStyle(
+                          fontSize: 16, color: Theme.of(context).primaryColor),
                     ),
                   ],
                 ),
@@ -57,11 +59,15 @@ class ProfileScreen extends StatelessWidget {
                   children: [
                     Text(
                       "Rank",
-                      style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
                     ),
                     Text(
                       rank,
-                      style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColor),
+                      style: TextStyle(
+                          fontSize: 16, color: Theme.of(context).primaryColor),
                     ),
                   ],
                 ),
@@ -74,7 +80,8 @@ class ProfileScreen extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "My Courses",
-                  style: TextStyle(fontSize: 20, color: Theme.of(context).primaryColor),
+                  style: TextStyle(
+                      fontSize: 20, color: Theme.of(context).primaryColor),
                 ),
               ),
             ),

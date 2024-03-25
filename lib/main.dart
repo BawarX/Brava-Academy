@@ -47,9 +47,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         debugShowCheckedModeBanner: false,
-        home: sharedPreferences.getString('user') == null
-            ? const Screen1()
-            : const HomePage(),
+        home: sharedPreferences.getString('user') == null ? const Screen1() : const HomePage(),
       ),
     );
   }

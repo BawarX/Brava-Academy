@@ -97,8 +97,8 @@ class ApiService {
       List<Instructor> instructordata = [];
       await body.forEach((element) {
         course.add(CourseModel.fromJson(element));
-        // instructordata.add(
-        //     Instructor.fromJson(element['author'] as Map<String, dynamic>));
+        instructordata.add(
+            Instructor.fromJson(element['author'] as Map<String, dynamic>));
       });
       courseData = course;
       instructorData = instructordata;
@@ -124,12 +124,7 @@ class ApiService {
   }
 
   static addCourse(Map<String, dynamic> courseData) async {
-<<<<<<< HEAD
-    var res = await http
-        .post(Uri.parse('http://10.0.2.2:3000/course/add-course'), body: {
-=======
     var res = await http.post(Uri.parse('http://192.168.1.5:3000/course/add-course'), body: {
->>>>>>> de476677e93e05f6f1e3402c6b1bf0a3c9e5fe9f
       'data': jsonEncode(courseData),
     });
     var body = jsonDecode(res.body);

@@ -2,7 +2,6 @@ import 'package:brava/constant.dart';
 import 'package:brava/firebase_options.dart';
 import 'package:brava/provider/bookmark.dart';
 import 'package:brava/provider/input_field_provider.dart';
-import 'package:brava/screen/Home/home_page.dart';
 import 'package:brava/screen/authentication/start_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +13,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  print(sharedPreferences.getBool('isLogin'));
+  print("${sharedPreferences.getBool('isLogin')} bawar xalid ");
   runApp(const MyApp());
 }
 
@@ -47,14 +46,10 @@ class MyApp extends StatelessWidget {
           ),
         ),
         debugShowCheckedModeBanner: false,
-<<<<<<< HEAD
-        home: sharedPreferences.getString('user') == null
-            ? const Screen1()
-            : const HomePage(),
-        // home: const VideoPlayerClass(),
-=======
-        home: sharedPreferences.getString('user') == null ? const Screen1() : const HomePage(),
->>>>>>> de476677e93e05f6f1e3402c6b1bf0a3c9e5fe9f
+        // home: sharedPreferences.getString('user') == null
+        //     ? const Screen1()
+        //     : const HomePage(),
+        home: const Screen1(),
       ),
     );
   }

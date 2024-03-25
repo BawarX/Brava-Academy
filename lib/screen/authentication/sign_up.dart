@@ -161,6 +161,12 @@ class _SignUp_screenState extends State<SignUp_screen> {
                                 autoCloseDuration: const Duration(seconds: 3));
                             return;
                           }
+                          print(firstnameController.text);
+                          print(lastnameController.text);
+                          print(emailController.text);
+                          print(passwordController.text);
+                          print(confirmPasswordController.text);
+                          // service.signUp(
                           service.signUp(
                               firstnameController.text,
                               lastnameController.text,

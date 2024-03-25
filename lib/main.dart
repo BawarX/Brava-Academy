@@ -47,10 +47,14 @@ class MyApp extends StatelessWidget {
           ),
         ),
         debugShowCheckedModeBanner: false,
+<<<<<<< HEAD
         home: sharedPreferences.getString('user') == null
             ? const Screen1()
             : const HomePage(),
         // home: const VideoPlayerClass(),
+=======
+        home: sharedPreferences.getString('user') == null ? const Screen1() : const HomePage(),
+>>>>>>> de476677e93e05f6f1e3402c6b1bf0a3c9e5fe9f
       ),
     );
   }

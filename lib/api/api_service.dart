@@ -12,10 +12,7 @@ import 'package:http/http.dart' as http;
 import 'package:quickalert/quickalert.dart';
 
 class ApiService {
-  void login(
-      {required String email,
-      required String password,
-      required BuildContext context}) async {
+  void login({required String email, required String password, required BuildContext context}) async {
     if (!await isEmailAndPasswordValid(email, password, context)) {
       return;
     }
@@ -30,18 +27,10 @@ class ApiService {
         var data = body['data'];
         var status = body['status'];
         if (!status) {
-          await showQuickAlert(
-              title: 'Something  Wrong!',
-              text: 'Your  Email is  Incorrect',
-              type: QuickAlertType.error,
-              context: context);
+          await showQuickAlert(title: 'Something  Wrong!', text: 'Your  Email is  Incorrect', type: QuickAlertType.error, context: context);
         } else {
           if (password == data['password']) {
-            await showQuickAlert(
-                title: 'Success!',
-                text: 'Login Successfully',
-                type: QuickAlertType.success,
-                context: context);
+            await showQuickAlert(title: 'Success!', text: 'Login Successfully', type: QuickAlertType.success, context: context);
             sharedPreferences.setString('user', jsonEncode(data));
             await fetchData();
             Navigator.pushAndRemoveUntil(
@@ -53,11 +42,7 @@ class ApiService {
             );
             print('hi');
           } else {
-            await showQuickAlert(
-                title: 'Something  Wrong!',
-                text: 'Email OR Password is Incorrect',
-                type: QuickAlertType.error,
-                context: context);
+            await showQuickAlert(title: 'Something  Wrong!', text: 'Email OR Password is Incorrect', type: QuickAlertType.error, context: context);
           }
         }
       } else {
@@ -68,8 +53,7 @@ class ApiService {
     }
   }
 
-  void signUp(String firstname, String lastname, String email, String password,
-      BuildContext context) async {
+  void signUp(String firstname, String lastname, String email, String password, BuildContext context) async {
     Map<String, String> data = {
       "firstname": firstname,
       "lastname": lastname,
@@ -88,23 +72,12 @@ class ApiService {
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         if (data['status']) {
-          await showQuickAlert(
-              title: 'success',
-              text: 'successfully Create The Account',
-              type: QuickAlertType.success,
-              context: context);
+          await showQuickAlert(title: 'success', text: 'successfully Create The Account', type: QuickAlertType.success, context: context);
           sharedPreferences.setString('user', jsonEncode(data['data']));
           await fetchData();
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
-              (route) => false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const HomePage()), (route) => false);
         } else {
-          showQuickAlert(
-              title: 'Error',
-              text: data['data'],
-              type: QuickAlertType.error,
-              context: context);
+          showQuickAlert(title: 'Error', text: data['data'], type: QuickAlertType.error, context: context);
         }
       } else {
         throw Exception('Failed to load data');
@@ -124,8 +97,8 @@ class ApiService {
       List<Instructor> instructordata = [];
       await body.forEach((element) {
         course.add(CourseModel.fromJson(element));
-        instructordata.add(
-            Instructor.fromJson(element['author'] as Map<String, dynamic>));
+        // instructordata.add(
+        //     Instructor.fromJson(element['author'] as Map<String, dynamic>));
       });
       courseData = course;
       instructorData = instructordata;
@@ -151,8 +124,12 @@ class ApiService {
   }
 
   static addCourse(Map<String, dynamic> courseData) async {
+<<<<<<< HEAD
     var res = await http
         .post(Uri.parse('http://10.0.2.2:3000/course/add-course'), body: {
+=======
+    var res = await http.post(Uri.parse('http://192.168.1.5:3000/course/add-course'), body: {
+>>>>>>> de476677e93e05f6f1e3402c6b1bf0a3c9e5fe9f
       'data': jsonEncode(courseData),
     });
     var body = jsonDecode(res.body);
@@ -169,37 +146,18 @@ class ApiService {
   }
 }
 
-Future<void> showQuickAlert(
-    {required String title,
-    required String text,
-    required QuickAlertType type,
-    required BuildContext context}) async {
-  await QuickAlert.show(
-      context: context,
-      type: type,
-      autoCloseDuration: const Duration(seconds: 3),
-      title: title,
-      text: text);
+Future<void> showQuickAlert({required String title, required String text, required QuickAlertType type, required BuildContext context}) async {
+  await QuickAlert.show(context: context, type: type, autoCloseDuration: const Duration(seconds: 3), title: title, text: text);
   return;
 }
 
-Future<bool> isEmailAndPasswordValid(
-    String email, String password, BuildContext context) async {
+Future<bool> isEmailAndPasswordValid(String email, String password, BuildContext context) async {
   if (!email.contains('@')) {
-    await showQuickAlert(
-        title: 'Error',
-        text: 'Invalid email address please enter the Valid Email',
-        type: QuickAlertType.error,
-        context: context);
+    await showQuickAlert(title: 'Error', text: 'Invalid email address please enter the Valid Email', type: QuickAlertType.error, context: context);
     return false;
   } else {
     if (password.trim().length < 8) {
-      await showQuickAlert(
-          title: 'Error',
-          text:
-              'Your Password is Invalid ,Password must be at least 8 characters long',
-          type: QuickAlertType.error,
-          context: context);
+      await showQuickAlert(title: 'Error', text: 'Your Password is Invalid ,Password must be at least 8 characters long', type: QuickAlertType.error, context: context);
       return false;
     }
     return true;

@@ -32,6 +32,7 @@ class ApiService {
         } else {
           if (password == data['password']) {
             await showQuickAlert(title: 'Success!', text: 'Login Successfully', type: QuickAlertType.success, context: context);
+            sharedPreferences.setBool('isLogin', true);
             sharedPreferences.setString('user', jsonEncode(data));
 
             Navigator.pushAndRemoveUntil(
@@ -75,6 +76,7 @@ class ApiService {
         if (data['status']) {
           await showQuickAlert(title: 'success', text: 'successfully Create The Account', type: QuickAlertType.success, context: context);
           sharedPreferences.setString('user', jsonEncode(data['data']));
+          sharedPreferences.setBool('isLogin', true);
           //fetchData();
           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const HomePage()), (route) => false);
         } else {

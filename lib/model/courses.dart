@@ -6,11 +6,11 @@ class CourseModel {
   String price;
   String image;
   String description;
-  String authorId;
+  //String authorId;
   bool isBookmarked;
 
   CourseModel({
-    required this.authorId,
+    //  required this.authorId,
     required this.id,
     required this.rank,
     required this.courseTitle,
@@ -23,14 +23,15 @@ class CourseModel {
 
   static CourseModel fromJson(e) {
     return CourseModel(
-        id: e['_id'],
-        rank: e['numberOfStudents'],
-        courseTitle: e['name'],
-        duration: '15',
-        authorId: e['author']['_id'],
-        price: e['price'].toString(),
-        isBookmarked: true,
-        image: 'assets/images/course1.png',
-        description: e['description']);
+      id: e['_id'],
+      rank: e['numberOfStudents'],
+      courseTitle: e['name'],
+      duration: '15',
+      //  authorId: e['author']['_id'],
+      price: e['price'].toString(),
+      isBookmarked: false,
+      image: 'assets/images/course1.png',
+      description: e['description'],
+    );
   }
 }

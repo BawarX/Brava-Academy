@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:brava/constant.dart';
 import 'package:brava/data/course_data.dart';
@@ -32,7 +33,7 @@ class ApiService {
           if (password == data['password']) {
             await showQuickAlert(title: 'Success!', text: 'Login Successfully', type: QuickAlertType.success, context: context);
             sharedPreferences.setString('user', jsonEncode(data));
-            await fetchData();
+
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
@@ -74,7 +75,7 @@ class ApiService {
         if (data['status']) {
           await showQuickAlert(title: 'success', text: 'successfully Create The Account', type: QuickAlertType.success, context: context);
           sharedPreferences.setString('user', jsonEncode(data['data']));
-          await fetchData();
+          //fetchData();
           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const HomePage()), (route) => false);
         } else {
           showQuickAlert(title: 'Error', text: data['data'], type: QuickAlertType.error, context: context);
@@ -90,15 +91,16 @@ class ApiService {
   static fetchData() async {
     var url = Uri.parse('http://10.0.2.2:3000/course/home');
     final response = await http.get(url);
+    print(response.body.toString());
     var body = jsonDecode(response.body);
-    print(body);
+
     if (response.statusCode == 200) {
+      log("dachma iffffffffffffffffffff");
       List<CourseModel> course = [];
       List<Instructor> instructordata = [];
       await body.forEach((element) {
         course.add(CourseModel.fromJson(element));
-        // instructordata.add(
-        //     Instructor.fromJson(element['author'] as Map<String, dynamic>));
+        instructordata.add(Instructor.fromJson(element['author'] as Map<String, dynamic>));
       });
       courseData = course;
       instructorData = instructordata;
@@ -110,8 +112,7 @@ class ApiService {
 
   static Future<List> fetchusercourses() async {
     var response = await http.get(
-      Uri.parse(
-          'http://10.0.2.2:3000/course/search-course-by-authorid/65da36fdb2e101cd2b9c3810'),
+      Uri.parse('http://10.0.2.2:3000/course/search-course-by-authorid/65da36fdb2e101cd2b9c3810'),
     );
     if (response.statusCode == 200) {
       final body = jsonDecode(response.body);
@@ -124,12 +125,7 @@ class ApiService {
   }
 
   static addCourse(Map<String, dynamic> courseData) async {
-<<<<<<< HEAD
-    var res = await http
-        .post(Uri.parse('http://10.0.2.2:3000/course/add-course'), body: {
-=======
-    var res = await http.post(Uri.parse('http://192.168.1.5:3000/course/add-course'), body: {
->>>>>>> de476677e93e05f6f1e3402c6b1bf0a3c9e5fe9f
+    var res = await http.post(Uri.parse('http://10.0.2.2:3000/course/add-course'), body: {
       'data': jsonEncode(courseData),
     });
     var body = jsonDecode(res.body);

@@ -50,6 +50,7 @@ class MyApp extends StatelessWidget {
         home: sharedPreferences.getString('user') == null
             ? const Screen1()
             : const HomePage(),
+        // home: const VideoPlayerClass(),
       ),
     );
   }

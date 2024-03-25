@@ -135,11 +135,35 @@ class ApiService {
     return;
   }
 
+  static Future<List> fetchusercourses() async {
+    var response = await http.get(
+      Uri.parse(
+          'http://10.0.2.2:3000/course/search-course-by-authorid/65da36fdb2e101cd2b9c3810'),
+    );
+    if (response.statusCode == 200) {
+      final body = jsonDecode(response.body);
+      print(body);
+      return body as List;
+    } else {
+      print('have erroooooooorrrrrrrrrrrrrrrrrrrrr=====================');
+    }
+    return [];
+  }
+
   static addCourse(Map<String, dynamic> courseData) async {
     var res = await http
-        .post(Uri.parse('http://192.168.1.5:3000/course/add-course'), body: {
+        .post(Uri.parse('http://10.0.2.2:3000/course/add-course'), body: {
       'data': jsonEncode(courseData),
     });
+    var body = jsonDecode(res.body);
+    print(body);
+  }
+
+  static deleteTheCourse(String courseId) async {
+    print(courseId);
+    var res = await http.delete(
+      Uri.parse('http://10.0.2.2:3000/course/delete-course-by-id/$courseId'),
+    );
     var body = jsonDecode(res.body);
     print(body);
   }

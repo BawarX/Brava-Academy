@@ -51,6 +51,8 @@ dependencies:
   random_string: ^2.3.1
   flick_video_player: ^0.7.0
   firebase_app_check: ^0.2.1+18
+  chewie: ^1.5.0
+  flutter_slidable: ^3.1.0
 
 dev_dependencies:
   flutter_test:

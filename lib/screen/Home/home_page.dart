@@ -8,6 +8,7 @@ import 'package:brava/model/courses.dart';
 import 'package:brava/provider/bookmark.dart';
 import 'package:brava/screen/Home/add-course-page/add_course.dart';
 import 'package:brava/screen/Home/course_detail.dart';
+import 'package:brava/screen/Home/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
@@ -232,7 +233,7 @@ class _HomePageState extends State<HomePage> {
                                                     color: Colors.yellow,
                                                   ),
                                                   Text(
-                                                    courseModel.rank,
+                                                    courseModel.rank.toString(),
                                                     style: const TextStyle(
                                                         fontSize: 12),
                                                   ),
@@ -356,9 +357,19 @@ class upperWidgets extends StatelessWidget {
     return Row(
       children: [
         const Gap(10),
-        const CircleAvatar(
-          backgroundImage: AssetImage(
-            'assets/images/guy1.png',
+        GestureDetector( 
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ProfileScreen(),
+              ),
+            );
+          },
+          child: const CircleAvatar(
+            backgroundImage: AssetImage(
+              'assets/images/guy1.png',
+            ),
           ),
         ),
         const Gap(5),

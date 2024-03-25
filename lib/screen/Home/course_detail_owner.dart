@@ -14,8 +14,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:video_player/video_player.dart';
 
-class CourseDetail extends StatelessWidget {
-  CourseDetail({super.key, required this.course});
+class CourseDetailOwner extends StatelessWidget {
+  CourseDetailOwner({super.key, required this.course});
   Course course;
   String userNmae = "Bawar khalid";
   double rate = 4.4;
@@ -38,6 +38,67 @@ class CourseDetail extends StatelessWidget {
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
+        ),
+      ),
+      floatingActionButton: SizedBox(
+        width: 130,
+        height: 50,
+        child: FloatingActionButton(
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text(
+                "Edit Course",
+                style: TextStyle(color: Colors.purple),
+              ),
+              Icon(
+                Icons.edit,
+                color: Colors.purple,
+              ),
+            ],
+          ),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return Dialog(
+                  insetPadding: const EdgeInsets.all(10),
+                  child: SizedBox(
+                    height: 650,
+                    width: double.infinity,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          const Gap(10),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  "Add a new video",
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                   
+                                  },
+                                  icon: const Icon(
+                                    Icons.add,
+                                    size: 20,
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
         ),
       ),
       body: Center(
@@ -121,7 +182,7 @@ class CourseDetail extends StatelessWidget {
                           MaterialPageRoute(
                             builder: (context) => PlayVideo(
                               videoURL: courseUrl,
-                              videoName: 'video',
+                              videoName: 'test video player',
                             ),
                           ),
                         );

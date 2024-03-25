@@ -1,8 +1,8 @@
 import 'package:brava/api/api_service.dart';
 import 'package:brava/screen/authentication/log_in.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 
@@ -175,6 +175,9 @@ class _SignUp_screenState extends State<SignUp_screen> {
                             const Gap(10),
                             Expanded(
                               child: TextFormField(
+                                onChanged: (value) {
+                                  emailController.value = TextEditingValue(text: value.toLowerCase());
+                                },
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return 'Please enter your email';
@@ -263,57 +266,57 @@ class _SignUp_screenState extends State<SignUp_screen> {
                     ),
                   ),
                   const Gap(10),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Container(
-                      height: 50,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: fillColor,
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: outlineColor),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Row(
-                          children: [
-                            const Gap(10),
-                            Icon(
-                              Icons.password_outlined,
-                              color: outlineColor,
-                              size: 29,
-                            ),
-                            const Gap(10),
-                            Expanded(
-                              child: TextFormField(
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'confirm password required';
-                                  } else {
-                                    return null;
-                                  }
-                                },
-                                controller: confirmPasswordController,
-                                obscureText: true,
-                                style: TextStyle(
-                                  color: outlineColor,
-                                  fontSize: 18,
-                                ),
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: "Confirm Password",
-                                  hintStyle: TextStyle(
-                                    color: textColor,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 10),
+                  //   child: Container(
+                  //     height: 50,
+                  //     width: double.infinity,
+                  //     decoration: BoxDecoration(
+                  //       color: fillColor,
+                  //       borderRadius: BorderRadius.circular(30),
+                  //       border: Border.all(color: outlineColor),
+                  //     ),
+                  //     child: Padding(
+                  //       padding: const EdgeInsets.symmetric(horizontal: 10),
+                  //       child: Row(
+                  //         children: [
+                  //           const Gap(10),
+                  //           Icon(
+                  //             Icons.password_outlined,
+                  //             color: outlineColor,
+                  //             size: 29,
+                  //           ),
+                  //           const Gap(10),
+                  //           Expanded(
+                  //             child: TextFormField(
+                  //               validator: (value) {
+                  //                 if (value == null || value.isEmpty) {
+                  //                   return 'confirm password required';
+                  //                 } else {
+                  //                   return null;
+                  //                 }
+                  //               },
+                  //               controller: confirmPasswordController,
+                  //               obscureText: true,
+                  //               style: TextStyle(
+                  //                 color: outlineColor,
+                  //                 fontSize: 18,
+                  //               ),
+                  //               decoration: InputDecoration(
+                  //                 border: InputBorder.none,
+                  //                 hintText: "Confirm Password",
+                  //                 hintStyle: TextStyle(
+                  //                   color: textColor,
+                  //                   fontSize: 18,
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //           ),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                   const Gap(10),
                   Row(
                     children: [
@@ -330,7 +333,12 @@ class _SignUp_screenState extends State<SignUp_screen> {
                       ),
                       const Gap(10),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const Login_screen()),
+                          );
+                        },
                         child: Text(
                           "Login",
                           style: TextStyle(

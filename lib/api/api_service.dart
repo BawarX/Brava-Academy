@@ -9,12 +9,13 @@ import 'package:brava/screen/Home/nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  void login({required String email, required String password, required BuildContext context}) async {
+  void login({required String emailController, required String passwordController, required BuildContext context}) async {
     try {
-      var url = Uri.parse('http://10.0.2.2:3000/user/get-user-by-email/$email');
+      var url = Uri.parse('http://10.0.2.2:3000/user/get-user-by-email/$emailController');
       final response = await http.get(
         url,
       );
@@ -35,10 +36,10 @@ class ApiService {
         prefs.setString('lastname', lastName);
         prefs.setString('email', email);
         prefs.setString('imageUrl', imageUrl);
+        prefs.setString('password', password);
 
-        if (password == data['data']['password']) {
-          log('Loging ============================>');
-          context.read<UserProvider>().setUser(firstName: firstname, imageUrl: imageUrl, email: email, lastName: lastName);
+        if (passwordController == password && emailController == email) {
+          context.read<UserProvider>().setUser(firstName: firstname, imageUrl: imageUrl, email: email, lastName: lastName, password: password);
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -46,13 +47,13 @@ class ApiService {
             ),
           );
         } else {
-          log('Wrong Password');
+          QuickAlert.show(context: context, type: QuickAlertType.error);
         }
       } else {
         throw Exception('Failed to load data');
       }
     } catch (e) {
-      print(e);
+      QuickAlert.show(context: context, type: QuickAlertType.error);
     }
   }
 
@@ -74,7 +75,21 @@ class ApiService {
     );
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
+      String id = data['data']['_id'];
+      String firstname = data['data']['firstname'];
+      String lastName = data['data']['lastname'];
+      String imageUrl = data['data']['image'];
+      String password = data['data']['password'];
+      String email = data['data']['email'];
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('_id', id);
+      prefs.setString('firstname', firstname);
+      prefs.setString('lastname', lastName);
+      prefs.setString('email', email);
+      prefs.setString('imageUrl', imageUrl);
+      prefs.setString('password', password);
       print(data);
+      context.read<UserProvider>().setUser(firstName: firstname, imageUrl: imageUrl, email: email, lastName: lastName, password: password);
       print("user added successfully");
       Navigator.push(context, MaterialPageRoute(builder: (context) => const NavBar()));
     } else {
@@ -113,10 +128,8 @@ class ApiService {
       print(data);
       print("user added successfully");
       return true;
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const NavBar()));
     } else {
       return false;
-      throw Exception('Failed to load data');
     }
   }
 }

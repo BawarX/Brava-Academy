@@ -4,6 +4,8 @@ import 'package:brava/api/api_service.dart';
 import 'package:brava/model/courses.dart';
 import 'package:brava/provider/user.dart';
 import 'package:brava/screen/Home/bookmarked_course.dart';
+import 'package:brava/screen/Home/course_detail.dart';
+import 'package:brava/screen/Home/course_detail_owner.dart';
 import 'package:brava/screen/Home/home_page.dart';
 import 'package:brava/screen/Home/nav_bar.dart';
 import 'package:brava/screen/authentication/start_screen.dart';
@@ -28,7 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? id;
   String? firstName;
   String? lastName;
-
+  String? password;
   Future getEmail() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
@@ -37,6 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       id = preferences.getString('_id')!;
       firstName = preferences.getString('firstname')!;
       lastName = preferences.getString('lastname')!;
+      password = preferences.getString('password');
     });
   }
 
@@ -62,6 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     String lastName = context.watch<UserProvider>().lastName;
     String email = context.watch<UserProvider>().email;
     String imageUrl = context.watch<UserProvider>().imageUrl;
+    String password = context.watch<UserProvider>().password;
     String courseNumber = '1';
     String rank = '100';
 
@@ -117,6 +121,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Text("First Name: $firstName"),
               Text("last Name: $lastName"),
               Text("email: $email"),
+              Text("pass: $password"),
               Text("ID(test): $id"),
               const Spacer(),
               SizedBox(
@@ -195,116 +200,94 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ),
-
-            // adding a consumer so it listens to the events if there are courses show it here. these are my courses!!
-            //const course_bookmarked(),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                height: 120,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(15),
-                    ),
-                    border: Border.all(
-                      color: Theme.of(context).primaryColor,
-                    )),
-                child: Row(
-                  children: [
-                    const Gap(10),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(18),
-                      child: const SizedBox(
-                        width: 100,
-                        height: 100,
-                      ),
-                    ),
-                    const Gap(10),
-                    const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Gap(15),
-                        Text(
-                          'Course Bundle Number',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                        ),
-                        Gap(15),
-                        Text(
-                          '',
-                        )
-                      ],
-                    )
-                  ],
-                ),
+            Expanded(
+              child: FutureBuilder<List<Course>>(
+                future: serivce.getCourse(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasData) {
+                    final courses = snapshot.data;
+                    return ListView.builder(
+                      itemCount: 3,
+                      itemBuilder: (context, index) {
+                        return courses![index].author!.sId == id
+                            ? GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => CourseDetailOwner(
+                                                course: courses[index],
+                                              )));
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    height: 120,
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(15),
+                                        ),
+                                        border: Border.all(
+                                          color: Theme.of(context).primaryColor,
+                                        )),
+                                    child: Row(
+                                      children: [
+                                        const Gap(10),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(18),
+                                          child: SizedBox(
+                                            width: 150,
+                                            height: 100,
+                                            child: Image.network(
+                                              courses[index].backgroundImage,
+                                              fit: BoxFit.fill,
+                                            ),
+                                          ),
+                                        ),
+                                        const Gap(10),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            const Gap(15),
+                                            Text(
+                                              courses[index].name,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                            const Gap(5),
+                                            Flexible(
+                                              child: SizedBox(
+                                                width: 200,
+                                                child: Text(
+                                                  softWrap: true,
+                                                  courses[index].description,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : const SizedBox();
+                      },
+                    );
+                  } else {
+                    return const Text("no courses av");
+                  }
+                },
               ),
             ),
-            // Expanded(
-            //   child: FutureBuilder<List<Course>>(
-            //     future: serivce.getCourse(),
-            //     builder: (context, snapshot) {
-            //       final courses = snapshot.data;
-            //       return ListView.builder(
-            //         itemCount: courses!.length,
-            //         itemBuilder: (context, index) {
-            //           return Padding(
-            //             padding: const EdgeInsets.all(8.0),
-            //             child: Container(
-            //               height: 120,
-            //               width: double.infinity,
-            //               decoration: BoxDecoration(
-            //                   color: Colors.white,
-            //                   borderRadius: const BorderRadius.all(
-            //                     Radius.circular(15),
-            //                   ),
-            //                   border: Border.all(
-            //                     color: Theme.of(context).primaryColor,
-            //                   )),
-            //               child: Row(
-            //                 children: [
-            //                   const Gap(10),
-            //                   ClipRRect(
-            //                     borderRadius: BorderRadius.circular(18),
-            //                     child: SizedBox(
-            //                       width: 150,
-            //                       height: 100,
-            //                       child: Image.network(
-            //                         courses[index].backgroundImage,
-            //                         fit: BoxFit.fill,
-            //                       ),
-            //                     ),
-            //                   ),
-            //                   const Gap(10),
-            //                   Column(
-            //                     crossAxisAlignment: CrossAxisAlignment.start,
-            //                     children: [
-            //                       const Gap(15),
-            //                       Text(
-            //                         courses[index].name,
-            //                         style: const TextStyle(
-            //                           fontWeight: FontWeight.bold,
-            //                           fontSize: 18,
-            //                         ),
-            //                       ),
-            //                       const Gap(15),
-            //                       Text(
-            //                         courses[index].description,
-            //                       )
-            //                     ],
-            //                   )
-            //                 ],
-            //               ),
-            //             ),
-            //           );
-            //         },
-            //       );
-            //     },
-            //   ),
-            // ),
           ],
         ),
       ),

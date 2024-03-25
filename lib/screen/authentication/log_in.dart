@@ -1,5 +1,6 @@
 import 'package:brava/api/api_service.dart';
 import 'package:brava/main.dart';
+import 'package:brava/screen/Home/VideoList/widget/input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
@@ -65,143 +66,172 @@ class _Login_screenState extends State<Login_screen> {
               child: Column(
                 children: [
                   const Gap(90),
-                  const Gap(30),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Container(
-                      height: 50,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: fillColor,
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: outlineColor),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Row(
-                          children: [
-                            const Gap(10),
-                            Icon(
-                              Icons.email_outlined,
-                              color: outlineColor,
-                              size: 29,
-                            ),
-                            const Gap(10),
-                            Expanded(
-                              child: TextFormField(
-                                controller: emailController,
-                                style: TextStyle(
-                                  color: outlineColor,
-                                  fontSize: 18,
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please Enter some text';
-                                  } else {
-                                    return null;
-                                  }
-                                },
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: "Email",
-                                  hintStyle: TextStyle(
-                                    color: outlineColor,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                  InputField(
+                    controller: emailController,
+                    label: 'Email',
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'enter a valid email';
+                      }
+                      return null;
+                    },
                   ),
                   const Gap(10),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Container(
-                      height: 50,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: fillColor,
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: outlineColor),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Row(
-                          children: [
-                            const Gap(10),
-                            Icon(
-                              Icons.password_outlined,
-                              color: outlineColor,
-                              size: 29,
-                            ),
-                            const Gap(10),
-                            Expanded(
-                              child: TextFormField(
-                                controller: passwordController,
-                                obscureText: !isVisisble,
-                                style: TextStyle(
-                                  color: outlineColor,
-                                  fontSize: 18,
-                                ),
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: "Password",
-                                  hintStyle: TextStyle(
-                                    color: outlineColor,
-                                    fontSize: 18,
-                                  ),
-                                  suffixIcon: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        isVisisble = !isVisisble;
-                                      });
-                                    },
-                                    icon: Icon(isVisisble ? Icons.visibility : Icons.visibility_off),
-                                    color: outlineColor,
-                                  ),
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Password is required';
-                                  } else if (value.length < 8) {
-                                    return 'Password must be at least 8 characters';
-                                  }
-                                  return null; // Return null if validation passes
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                  InputField(
+                    controller: passwordController,
+                    label: 'Password',
+                    validator: (value) {
+                      if (value == null || value.isEmpty || value.length < 6) {
+                        return 'password must be at least 6 characters';
+                      }
+                      return null;
+                    },
                   ),
-                  const Gap(10),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          "Forget Password?",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: outlineColor,
-                            decoration: TextDecoration.underline,
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 10),
+                  //   child: Container(
+                  //     height: 50,
+                  //     width: double.infinity,
+                  //     decoration: BoxDecoration(
+                  //       color: fillColor,
+                  //       borderRadius: BorderRadius.circular(30),
+                  //       border: Border.all(color: outlineColor),
+                  //     ),
+                  //     child: Padding(
+                  //       padding: const EdgeInsets.symmetric(horizontal: 10),
+                  //       child: Row(
+                  //         children: [
+                  //           const Gap(10),
+                  //           Icon(
+                  //             Icons.password_outlined,
+                  //             color: outlineColor,
+                  //             size: 29,
+                  //           ),
+                  //           const Gap(10),
+                  //           Expanded(
+                  //             child: TextFormField(
+                  //               controller: emailController,
+                  //               style: TextStyle(
+                  //                 color: outlineColor,
+                  //                 fontSize: 18,
+                  //               ),
+                  //               decoration: InputDecoration(
+                  //                 border: InputBorder.none,
+                  //                 hintText: "email",
+                  //                 hintStyle: TextStyle(
+                  //                   color: outlineColor,
+                  //                   fontSize: 18,
+                  //                 ),
+                  //                 suffixIcon: IconButton(
+                  //                   onPressed: () {
+                  //                     setState(() {
+                  //                       isVisisble = !isVisisble;
+                  //                     });
+                  //                   },
+                  //                   icon: Icon(isVisisble ? Icons.visibility : Icons.visibility_off),
+                  //                   color: outlineColor,
+                  //                 ),
+                  //               ),
+                  //               validator: (value) {
+                  //                 if (value == null || value.isEmpty) {
+                  //                   return 'Password is required';
+                  //                 } else if (value.length < 8) {
+                  //                   return 'Password must be at least 8 characters';
+                  //                 }
+                  //                 return null; // Return null if validation passes
+                  //               },
+                  //             ),
+                  //           ),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 10),
+                  //   child: Container(
+                  //     height: 50,
+                  //     width: double.infinity,
+                  //     decoration: BoxDecoration(
+                  //       color: fillColor,
+                  //       borderRadius: BorderRadius.circular(30),
+                  //       border: Border.all(color: outlineColor),
+                  //     ),
+                  //     child: Padding(
+                  //       padding: const EdgeInsets.symmetric(horizontal: 10),
+                  //       child: Row(
+                  //         children: [
+                  //           const Gap(10),
+                  //           Icon(
+                  //             Icons.password_outlined,
+                  //             color: outlineColor,
+                  //             size: 29,
+                  //           ),
+                  //           const Gap(10),
+                  //           Expanded(
+                  //             child: TextFormField(
+                  //               controller: passwordController,
+                  //               obscureText: !isVisisble,
+                  //               style: TextStyle(
+                  //                 color: outlineColor,
+                  //                 fontSize: 18,
+                  //               ),
+                  //               decoration: InputDecoration(
+                  //                 border: InputBorder.none,
+                  //                 hintText: "Password",
+                  //                 hintStyle: TextStyle(
+                  //                   color: outlineColor,
+                  //                   fontSize: 18,
+                  //                 ),
+                  //                 suffixIcon: IconButton(
+                  //                   onPressed: () {
+                  //                     setState(() {
+                  //                       isVisisble = !isVisisble;
+                  //                     });
+                  //                   },
+                  //                   icon: Icon(isVisisble ? Icons.visibility : Icons.visibility_off),
+                  //                   color: outlineColor,
+                  //                 ),
+                  //               ),
+                  //               validator: (value) {
+                  //                 if (value == null || value.isEmpty) {
+                  //                   return 'Password is required';
+                  //                 } else if (value.length < 8) {
+                  //                   return 'Password must be at least 8 characters';
+                  //                 }
+                  //                 return null; // Return null if validation passes
+                  //               },
+                  //             ),
+                  //           ),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  // const Gap(10),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(right: 10),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.end,
+                  //     children: [
+                  //       Text(
+                  //         "Forget Password?",
+                  //         style: TextStyle(
+                  //           fontSize: 14,
+                  //           fontWeight: FontWeight.w400,
+                  //           color: outlineColor,
+                  //           decoration: TextDecoration.underline,
+                  //         ),
+                  //       )
+                  //     ],
+                  //   ),
+                  // ),
                   const Gap(25),
                   GestureDetector(
                     onTap: () {
-                      if (_formKey.currentState!.validate()) {
-                        service.login(email: emailController.text, password: passwordController.text, context: context);
-                      } else {}
+                      if (_formKey.currentState != null) {
+                        service.login(emailController: emailController.text, passwordController: passwordController.text, context: context);
+                      }
                     },
                     child: Container(
                       height: 45,

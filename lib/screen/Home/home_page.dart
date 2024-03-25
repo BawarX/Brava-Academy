@@ -11,7 +11,7 @@ import 'package:brava/api/data/instructor_data.dart';
 import 'package:brava/model/courses.dart';
 import 'package:brava/provider/bookmark.dart';
 import 'package:brava/provider/user.dart';
-import 'package:brava/screen/Home/add_course.dart';
+import 'package:brava/screen/Home/VideoList/add_course.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
@@ -59,7 +59,8 @@ class _HomePageState extends State<HomePage> {
     String firstName = prefs.getString('firstname') ?? '';
     String lastName = prefs.getString('lastname') ?? '';
     String imageUrl = prefs.getString('imageUrl') ?? '';
-    context.read<UserProvider>().setUser(firstName: firstName, imageUrl: imageUrl, email: email, lastName: lastName);
+    String password = prefs.getString('password') ?? '';
+    context.read<UserProvider>().setUser(firstName: firstName, imageUrl: imageUrl, email: email, lastName: lastName, password: password);
   }
 
   @override
@@ -197,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                         } else if (snapshot.hasData) {
                           return ListView.builder(
                             scrollDirection: Axis.horizontal,
-                            itemCount: 3,
+                            itemCount: 4,
                             itemBuilder: (context, index) {
                               return Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 10),

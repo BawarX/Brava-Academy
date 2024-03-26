@@ -8,6 +8,7 @@ import 'package:brava/data/instructor_data.dart';
 import 'package:brava/model/courses.dart';
 import 'package:brava/model/instructor_model.dart';
 import 'package:brava/screen/Home/home_page.dart';
+import 'package:brava/screen/Home/nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:quickalert/quickalert.dart';
@@ -38,7 +39,7 @@ class ApiService {
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => const HomePage(),
+                builder: (context) => const NavBar(),
               ),
               (route) => false,
             );
@@ -78,7 +79,7 @@ class ApiService {
           sharedPreferences.setString('user', jsonEncode(data['data']));
           sharedPreferences.setBool('isLogin', true);
           //fetchData();
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const HomePage()), (route) => false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const NavBar()), (route) => false);
         } else {
           showQuickAlert(title: 'Error', text: data['data'], type: QuickAlertType.error, context: context);
         }

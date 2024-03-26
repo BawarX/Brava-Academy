@@ -23,8 +23,7 @@ class AddMyCourse extends StatefulWidget {
 
 class _AddMyCourseState extends State<AddMyCourse> {
   Future _pickImageFromGallery() async {
-    final returnedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    final returnedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (returnedImage == null) return;
     setState(() {
       selectedImage = File(returnedImage.path);
@@ -32,8 +31,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
   }
 
   Future _pickVideoFromGallery(String video) async {
-    final returnedVideo =
-        await ImagePicker().pickVideo(source: ImageSource.gallery);
+    final returnedVideo = await ImagePicker().pickVideo(source: ImageSource.gallery);
     if (returnedVideo == null) return;
     setState(() {
       selectedVideos[video] = File(returnedVideo.path);
@@ -43,11 +41,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
   Future uploadBackgroundImage() async {
     print('upload method running================>');
     String addID = randomAlphaNumeric(10);
-    Reference FirebaseStorageref = FirebaseStorage.instance
-        .ref()
-        .child('courseBackgroundImages')
-        .child(courseNameController.text)
-        .child('$addID.jpg');
+    Reference FirebaseStorageref = FirebaseStorage.instance.ref().child('courseBackgroundImages').child(courseNameController.text).child('$addID.jpg');
     final UploadTask task = FirebaseStorageref.putFile(selectedImage!);
     backgroundImageUrl = await (await task).ref.getDownloadURL();
     print('backgroundurl =========================> $backgroundImageUrl');
@@ -56,11 +50,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
   Future uploadCourseVideos(File file, int index, String videoname) async {
     if (selectedVideos.isNotEmpty) {
       String addID = randomAlphaNumeric(10);
-      Reference FirebaseStorageref = FirebaseStorage.instance
-          .ref()
-          .child('courseVideos')
-          .child(courseNameController.text)
-          .child('$videoname-$addID.mp4');
+      Reference FirebaseStorageref = FirebaseStorage.instance.ref().child('courseVideos').child(courseNameController.text).child('$videoname-$addID.mp4');
       final UploadTask task = FirebaseStorageref.putFile(file);
       controllers[index].videoUrl = await (await task).ref.getDownloadURL();
     }
@@ -168,10 +158,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
                                 Text(
                                   "Select Background Image for your Course",
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
+                                  style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 16),
                                 ),
                                 const Gap(10),
                                 Container(
@@ -179,9 +166,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
                                   height: 50,
                                   decoration: BoxDecoration(
                                     border: Border.all(
-                                      color: Theme.of(context)
-                                          .primaryColor
-                                          .withOpacity(.6),
+                                      color: Theme.of(context).primaryColor.withOpacity(.6),
                                     ),
                                     borderRadius: const BorderRadius.all(
                                       Radius.circular(50),
@@ -218,8 +203,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
 
               //videos Text and add icon
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5),
+                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -233,9 +217,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
                     IconButton(
                       onPressed: () {
                         controllers.add(
-                          Video(
-                              videoTitle: TextEditingController(),
-                              videoUrl: ''),
+                          Video(videoTitle: TextEditingController(), videoUrl: ''),
                         );
                         numberOfVideos++;
                         setState(() {});
@@ -272,8 +254,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
                       int k = 1;
                       selectedVideos.keys.toList().forEach((element) {
                         newmap.addAll({
-                          '${element.substring(0, 5)}$k':
-                              selectedVideos[element]!,
+                          '${element.substring(0, 5)}$k': selectedVideos[element]!,
                         });
                         k++;
                       });
@@ -281,9 +262,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
                       print(removedata);
                     });
                   },
-                  video: selectedVideos.length > i
-                      ? selectedVideos['video${i + 1}']
-                      : null,
+                  video: selectedVideos.length > i ? selectedVideos['video${i + 1}'] : null,
                 ),
               const Gap(10),
 
@@ -319,16 +298,26 @@ class _AddMyCourseState extends State<AddMyCourse> {
                       showDialog(
                           context: context,
                           builder: (Context) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
+                            return const Dialog(
+                                insetPadding: EdgeInsets.all(10),
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  height: 200,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Text(
+                                        "Video Uploading...",
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                      CircularProgressIndicator(),
+                                    ],
+                                  ),
+                                ));
                           });
                       await uploadBackgroundImage();
                       for (int i = 0; i < numberOfVideos; i++) {
-                        await uploadCourseVideos(
-                            selectedVideos['video${i + 1}'] as File,
-                            i,
-                            controllers[i].videoTitle.text);
+                        await uploadCourseVideos(selectedVideos['video${i + 1}'] as File, i, controllers[i].videoTitle.text);
                         log('upload=================================>$i');
                       }
 
@@ -340,8 +329,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
                         'videos': [
                           for (int i = 0; i < numberOfVideos; i++)
                             {
-                              'video${i + 1} title':
-                                  controllers[i].videoTitle.text,
+                              'video${i + 1} title': controllers[i].videoTitle.text,
                               'video${i + 1} url': controllers[i].videoUrl,
                             }
                         ],
@@ -378,6 +366,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
                   ),
                 ),
               ),
+              const Gap(15),
             ],
           ),
         ),

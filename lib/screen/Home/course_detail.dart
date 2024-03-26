@@ -11,8 +11,7 @@ import 'package:gap/gap.dart';
 class CourseDetail extends StatelessWidget {
   CourseDetail({super.key, required this.courseModel});
   CourseModel courseModel;
-  String userNmae = "Bawar khalid";
-
+  //String userNmae = courseModel.authorId;
   double rate = 4.4;
 
   @override
@@ -44,9 +43,9 @@ class CourseDetail extends StatelessWidget {
                 'assets/images/course1.png',
                 width: 400,
               ),
-              const Text(
-                "Web Full Stack Course",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              Text(
+                courseModel.courseTitle,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               Row(
                 children: [
@@ -56,9 +55,9 @@ class CourseDetail extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        userNmae,
-                        style: const TextStyle(
+                      const Text(
+                        'author name here please',
+                        style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
@@ -82,11 +81,11 @@ class CourseDetail extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    courseModel.description,
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  const Text(
+                    'Description',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  const Text("In this course you will learn a lot about basic web developement and an essential programming language with javascript")
+                  Text(courseModel.description)
                 ],
               ),
               const Gap(10),

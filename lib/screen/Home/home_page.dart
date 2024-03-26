@@ -399,6 +399,8 @@ class upperWidgets extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => AddMyCourse(
+                  appBarTitle: 'Add Course',
+                  textOfButton: 'Publish',
                   controllers: [
                     Video(videoTitle: TextEditingController(), videoUrl: ''),
                   ],

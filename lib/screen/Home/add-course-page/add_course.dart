@@ -14,6 +14,7 @@ import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:random_string/random_string.dart';
+import 'package:video_player/video_player.dart';
 
 enum ImageType {
   Network,
@@ -29,7 +30,9 @@ class AddMyCourse extends StatefulWidget {
     required this.courseNameController,
     required this.selectedImage,
     this.selectedImageType = ImageType.File,
-    this.selectedVideos = const {},
+    this.videoType = ImageType.File,
+    required this.appBarTitle,
+    required this.textOfButton,
   });
   int numberOfVideos;
   String? selectedImage;
@@ -37,7 +40,9 @@ class AddMyCourse extends StatefulWidget {
   TextEditingController courseDescriptionController;
   List<Video> controllers;
   ImageType selectedImageType;
-  Map<String, dynamic> selectedVideos;
+  ImageType videoType;
+  final String appBarTitle;
+  final String textOfButton;
 
   @override
   State<AddMyCourse> createState() => _AddMyCourseState();
@@ -63,12 +68,12 @@ class _AddMyCourseState extends State<AddMyCourse> {
     });
   }
 
-  Future _pickVideoFromGallery(String video) async {
+  Future _pickVideoFromGallery(int index) async {
     final returnedVideo =
         await ImagePicker().pickVideo(source: ImageSource.gallery);
     if (returnedVideo == null) return;
     setState(() {
-      widget.selectedVideos[video] = returnedVideo.path;
+      widget.controllers[index].videoUrl = returnedVideo.path;
     });
   }
 
@@ -87,7 +92,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
   }
 
   Future uploadCourseVideos(File file, int index, String videoname) async {
-    if (widget.selectedVideos.isNotEmpty) {
+    if (widget.controllers.isNotEmpty) {
       String addID = randomAlphaNumeric(10);
       Reference FirebaseStorageref = FirebaseStorage.instance
           .ref()
@@ -110,6 +115,10 @@ class _AddMyCourseState extends State<AddMyCourse> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
+            widget.selectedImage = null;
+            widget.courseNameController.clear();
+            widget.courseDescriptionController.clear();
+            widget.controllers.clear();
             Navigator.pop(context);
           },
           icon: Icon(
@@ -118,7 +127,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
           ),
         ),
         title: Text(
-          'Add Course',
+          widget.appBarTitle,
           style: TextStyle(
             color: Theme.of(context).primaryColor,
             fontWeight: FontWeight.bold,
@@ -291,31 +300,25 @@ class _AddMyCourseState extends State<AddMyCourse> {
                   videoTitleController: widget.controllers[i].videoTitle,
                   validator: (value) => provider.videoTitleValidator(value),
                   ontap: () async {
-                    await _pickVideoFromGallery('video${i + 1}');
+                    await _pickVideoFromGallery(i);
                   },
                   deleteButtonOnTap: () async {
                     setState(() {
                       widget.controllers.removeAt(i);
                       widget.numberOfVideos--;
-                      var removedata =
-                          widget.selectedVideos.remove('video${i + 1}');
-                      Map<String, File> newmap = {};
-                      int k = 1;
-                      widget.selectedVideos.keys.toList().forEach((element) {
-                        newmap.addAll({
-                          '${element.substring(0, 5)}$k':
-                              widget.selectedVideos[element]!,
-                        });
-                        k++;
-                      });
-                      widget.selectedVideos = newmap;
-                      print(removedata);
                     });
                   },
-                  video: widget.selectedVideos.length < i
-                      ? widget.selectedVideos['video${i + 1}']
-                      : null,
+                  video: widget.controllers[i].videoUrl == ''
+                      ? null
+                      : widget.controllers[i].videoUrl,
+                  controller: widget.controllers[i].videoType == ImageType.File
+                      ? VideoPlayerController.file(
+                          File(widget.controllers[i].videoUrl),
+                        )
+                      : VideoPlayerController.networkUrl(
+                          Uri.parse(widget.controllers[i].videoUrl)),
                 ),
+
               const Gap(10),
 
               //publish Button
@@ -339,7 +342,13 @@ class _AddMyCourseState extends State<AddMyCourse> {
                   }
 
                   if (_formkey.currentState!.validate()) {
-                    if (widget.numberOfVideos != widget.selectedVideos.length) {
+                    int numberOfSelectedVideos = 0;
+                    for (int i = 0; i < widget.controllers.length; i++) {
+                      if (widget.controllers[i].videoUrl != '') {
+                        numberOfSelectedVideos++;
+                      }
+                    }
+                    if (widget.numberOfVideos != numberOfSelectedVideos) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Please Selecte All the Video'),
@@ -357,7 +366,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
                       await uploadBackgroundImage();
                       for (int i = 0; i < widget.numberOfVideos; i++) {
                         await uploadCourseVideos(
-                            File(widget.selectedVideos['video${i + 1}']),
+                            File(widget.controllers[i].videoUrl),
                             i,
                             widget.controllers[i].videoTitle.text);
                         log('upload=================================>$i');
@@ -394,7 +403,6 @@ class _AddMyCourseState extends State<AddMyCourse> {
                       widget.courseNameController.clear();
                       widget.courseDescriptionController.clear();
                       widget.controllers.clear();
-                      widget.selectedVideos.clear();
                       widget.controllers = [
                         Video(
                             videoTitle: TextEditingController(), videoUrl: ''),
@@ -416,10 +424,10 @@ class _AddMyCourseState extends State<AddMyCourse> {
                       Radius.circular(30),
                     ),
                   ),
-                  child: const Center(
+                  child: Center(
                     child: Text(
-                      "Publish",
-                      style: TextStyle(
+                      widget.textOfButton,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 24,

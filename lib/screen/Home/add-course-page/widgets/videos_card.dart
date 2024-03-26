@@ -1,12 +1,10 @@
-import 'dart:io';
-
 import 'package:brava/input_field.dart';
-import 'package:brava/screen/Home/add-course-page/add_course.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
-class CardOfVideoTitleAndSelectVideo extends StatelessWidget {
+// ignore: must_be_immutable
+class CardOfVideoTitleAndSelectVideo extends StatefulWidget {
   CardOfVideoTitleAndSelectVideo({
     super.key,
     required this.videoTitleController,
@@ -15,7 +13,7 @@ class CardOfVideoTitleAndSelectVideo extends StatelessWidget {
     this.validator,
     this.video,
     required this.deleteButtonOnTap,
-    this.imageType = ImageType.File,
+    required this.controller ,
   });
   final void Function() ontap;
   final void Function() deleteButtonOnTap;
@@ -23,22 +21,25 @@ class CardOfVideoTitleAndSelectVideo extends StatelessWidget {
   final int videoNumber;
   final FormFieldValidator? validator;
   final String? video;
-  ImageType imageType;
+  VideoPlayerController controller;
+
+  @override
+  State<CardOfVideoTitleAndSelectVideo> createState() =>
+      _CardOfVideoTitleAndSelectVideoState();
+}
+
+class _CardOfVideoTitleAndSelectVideoState
+    extends State<CardOfVideoTitleAndSelectVideo> {
   @override
   Widget build(BuildContext context) {
-    VideoPlayerController? controller;
+    print('bdisb 333333333333333333333${widget.video}');
     initalizeVideo() {
-      imageType == ImageType.File
-          ? controller = VideoPlayerController.file(
-              File(video!),
-            )
-          : VideoPlayerController.networkUrl(Uri.parse(video!));
-      controller!..initialize().then((value) => null);
-      controller!.pause();
-      controller!.setLooping(false);
+      widget.controller.initialize().then((value) => null);
+      widget.controller.pause();
+      widget.controller.setLooping(false);
     }
 
-    if (video != null) {
+    if (widget.video != null) {
       initalizeVideo();
     }
     return Padding(
@@ -52,12 +53,12 @@ class CardOfVideoTitleAndSelectVideo extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Video $videoNumber',
+                  'Video ${widget.videoNumber}',
                   style: TextStyle(
                       color: Theme.of(context).primaryColor, fontSize: 18),
                 ),
                 GestureDetector(
-                  onTap: deleteButtonOnTap,
+                  onTap: widget.deleteButtonOnTap,
                   child: const CircleAvatar(
                     radius: 13,
                     backgroundColor: Colors.red,
@@ -74,14 +75,14 @@ class CardOfVideoTitleAndSelectVideo extends StatelessWidget {
             ),
           ),
           InputField(
-            controller: videoTitleController,
-            validator: validator,
-            label: 'Video-$videoNumber Title',
+            controller: widget.videoTitleController,
+            validator: widget.validator,
+            label: 'Video-${widget.videoNumber} Title',
             hint: 'Enter the Title for the video',
           ),
-          video == null
+          widget.video == null
               ? GestureDetector(
-                  onTap: ontap,
+                  onTap: widget.ontap,
                   child: Container(
                     margin:
                         const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
@@ -112,7 +113,7 @@ class CardOfVideoTitleAndSelectVideo extends StatelessWidget {
                           height: 5,
                         ),
                         Text(
-                          'Select Video $videoNumber',
+                          'Select Video ${widget.videoNumber}',
                           style: TextStyle(
                               color: Theme.of(context).primaryColor,
                               fontSize: 20),
@@ -137,7 +138,7 @@ class CardOfVideoTitleAndSelectVideo extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                     child: Chewie(
                       controller: ChewieController(
-                        videoPlayerController: controller!,
+                        videoPlayerController: widget.controller,
                         aspectRatio: 16 / 10,
                         autoPlay: true,
                       ),
@@ -147,5 +148,12 @@ class CardOfVideoTitleAndSelectVideo extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    widget.controller.dispose();
   }
 }

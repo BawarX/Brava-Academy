@@ -200,6 +200,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => AddMyCourse(
+                                          appBarTitle: 'Edit Course',
+                                          textOfButton: 'Update',
                                           controllers: [
                                             for (int i = 0;
                                                 i <
@@ -215,6 +217,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 videoUrl:
                                                     courseData[index].videos[i]
                                                         ['video${1 + i} url'],
+                                                        videoType: ImageType.Network,
                                               ),
                                           ],
                                           numberOfVideos:

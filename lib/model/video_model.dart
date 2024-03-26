@@ -1,7 +1,12 @@
+import 'package:brava/screen/Home/add-course-page/add_course.dart';
 import 'package:flutter/material.dart';
 
-class Video{
+class Video {
   final TextEditingController videoTitle;
-   String videoUrl;
-  Video({required this.videoTitle, required this.videoUrl});
+  String videoUrl;
+  ImageType videoType;
+  Video(
+      {required this.videoTitle,
+      required this.videoUrl,
+      this.videoType = ImageType.File});
 }

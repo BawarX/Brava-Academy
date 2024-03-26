@@ -30,9 +30,6 @@ class _VideoPlayerClassState extends State<VideoPlayerClass> {
         )..initialize().then((value) => null);
         _controller.play();
         _controller.setLooping(false);
-        _flickManager = FlickManager(
-          videoPlayerController: _controller,
-        );
         setState(() {});
         log('=======================${_controller.value.duration}');
       });

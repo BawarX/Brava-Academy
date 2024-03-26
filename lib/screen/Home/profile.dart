@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:brava/api/api_service.dart';
 import 'package:brava/constant.dart';
 import 'package:brava/data/course_data.dart';
+import 'package:brava/model/video_model.dart';
 import 'package:brava/screen/Home/add-course-page/add_course.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -155,7 +156,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         confirmBtnColor: Colors.red,
                                         onConfirmBtnTap: () async {
                                           await ApiService.deleteTheCourse(
-                                              '65da56a27c222049a01fce72');
+                                              courseData[index].id);
                                           courseData.removeAt(index);
                                           Navigator.pop(context);
                                           setState(() {});
@@ -194,11 +195,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
+                                    print(courseData[index].videos);
                                     Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const AddMyCourse()));
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => AddMyCourse(
+                                          controllers: [
+                                            for (int i = 0;
+                                                i <
+                                                    courseData[index]
+                                                        .videos
+                                                        .length;
+                                                i++)
+                                              Video(
+                                                videoTitle: TextEditingController(
+                                                    text: courseData[index]
+                                                            .videos[i][
+                                                        'video${i + 1} title']),
+                                                videoUrl:
+                                                    courseData[index].videos[i]
+                                                        ['video${1 + i} url'],
+                                              ),
+                                          ],
+                                          numberOfVideos:
+                                              courseData[index].videos.length,
+                                          courseDescriptionController:
+                                              TextEditingController(
+                                                  text: courseData[index]
+                                                      .description),
+                                          courseNameController:
+                                              TextEditingController(
+                                                  text: courseData[index]
+                                                      .courseTitle),
+                                          selectedImage:
+                                              courseData[index].image,
+                                          selectedImageType: ImageType.Network,
+                                          
+                                        ),
+                                      ),
+                                    );
                                   },
                                   child: Container(
                                     width: 80,

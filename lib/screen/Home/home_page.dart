@@ -5,6 +5,7 @@ import 'package:brava/constant.dart';
 import 'package:brava/data/course_data.dart';
 import 'package:brava/data/instructor_data.dart';
 import 'package:brava/model/courses.dart';
+import 'package:brava/model/video_model.dart';
 import 'package:brava/provider/bookmark.dart';
 import 'package:brava/screen/Home/add-course-page/add_course.dart';
 import 'package:brava/screen/Home/course_detail.dart';
@@ -204,7 +205,7 @@ class _HomePageState extends State<HomePage> {
                                           SizedBox(
                                             width: double.infinity,
                                             height: 140,
-                                            child: Image.asset(
+                                            child: Image.network(
                                               courseModel.image,
                                               fit: BoxFit.cover,
                                             ),
@@ -357,7 +358,7 @@ class upperWidgets extends StatelessWidget {
     return Row(
       children: [
         const Gap(10),
-        GestureDetector( 
+        GestureDetector(
           onTap: () {
             Navigator.push(
               context,
@@ -394,8 +395,20 @@ class upperWidgets extends StatelessWidget {
         const Spacer(),
         GestureDetector(
           onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const AddMyCourse()));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AddMyCourse(
+                  controllers: [
+                    Video(videoTitle: TextEditingController(), videoUrl: ''),
+                  ],
+                  numberOfVideos: 1,
+                  courseDescriptionController: TextEditingController(),
+                  courseNameController: TextEditingController(),
+                  selectedImage: null,
+                ),
+              ),
+            );
           },
           child: Container(
             width: 40,

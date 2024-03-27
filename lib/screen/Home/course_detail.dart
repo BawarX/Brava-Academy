@@ -1,21 +1,41 @@
 // ignore_for_file: must_be_immutable
 
-import 'package:brava/model/courses.dart';
+import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
+import 'package:brava/api/api_service.dart';
+import 'package:brava/constant.dart';
+import 'package:brava/model/courses.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
+import 'package:quickalert/quickalert.dart';
 
 class CourseDetail extends StatelessWidget {
-  CourseDetail({super.key, required this.courseModel});
+  CourseDetail(
+      {super.key, required this.courseModel, required this.authorName});
   CourseModel courseModel;
-  //String userNmae = courseModel.authorId;
+  String authorName;
   double rate = 4.4;
-
+  final user = jsonDecode(sharedPreferences.getString('user')!);
   @override
   Widget build(BuildContext context) {
+    print(sharedPreferences.getBool('isLogin'));
+    print(sharedPreferences.getString('user'));
+    print(courseModel.students);
+    bool userEnrolled = false;
+    checkUserEnrolledTheCourse() {
+      if (courseModel.authorId == user['_id']) {
+        userEnrolled = true;
+      } else {
+        for (int i = 0; i < courseModel.students.length; i++) {
+          if (user['_id'] == courseModel.students[i]) {
+            userEnrolled = true;
+            break;
+          }
+        }
+      }
+    }
+
+    checkUserEnrolledTheCourse();
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -53,7 +73,8 @@ class CourseDetail extends StatelessWidget {
               const Gap(5),
               Text(
                 courseModel.courseTitle,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               const Gap(5),
               Row(
@@ -64,9 +85,9 @@ class CourseDetail extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'author name here please',
-                        style: TextStyle(
+                      Text(
+                        authorName,
+                        style: const TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
@@ -82,7 +103,8 @@ class CourseDetail extends StatelessWidget {
                   const Spacer(),
                   Text(
                     'free',
-                    style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20),
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor, fontSize: 20),
                   )
                 ],
               ),
@@ -106,16 +128,26 @@ class CourseDetail extends StatelessWidget {
                     final courseUrl = courseModel.videos[index];
                     return GestureDetector(
                       onTap: () {
-                        print('this issssssssssssssssss $courseUrl');
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => PlayVideo(
-                        //       videoURL: courseUrl,
-                        //       videoName: 'video',
-                        //     ),
-                        //   ),
-                        // );
+                        if (userEnrolled) {
+                          print('this issssssssssssssssss $courseUrl');
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => PlayVideo(
+                          //       videoURL: courseUrl,
+                          //       videoName: 'video',
+                          //     ),
+                          //   ),
+                          // );
+                        } else {
+                          QuickAlert.show(
+                            context: context,
+                            type: QuickAlertType.warning,
+                            title: 'you aren\'t Enroll the course',
+                            text: 'Please enroll the course to watch the video',
+                            autoCloseDuration: const Duration(seconds: 3),
+                          );
+                        }
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -124,7 +156,8 @@ class CourseDetail extends StatelessWidget {
                           height: 70,
                           decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: const BorderRadius.all(Radius.circular(15)),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(15)),
                               border: Border.all(
                                 color: Colors.grey,
                               )),
@@ -141,8 +174,19 @@ class CourseDetail extends StatelessWidget {
                                 child: const Icon(Icons.play_arrow),
                               ),
                               const Gap(15),
-                              const Text(
-                                'Test Name',
+                              Text(
+                                  courseModel.videos[index]
+                                      ['video${index + 1} title'],
+                                  style: const TextStyle()),
+                              const Spacer(),
+                              !userEnrolled
+                                  ? Icon(
+                                      Icons.lock,
+                                      color: Theme.of(context).primaryColor,
+                                    )
+                                  : const SizedBox(),
+                              const SizedBox(
+                                width: 10,
                               ),
                             ],
                           ),
@@ -151,7 +195,55 @@ class CourseDetail extends StatelessWidget {
                     );
                   },
                 ),
-              )
+              ),
+              !userEnrolled
+                  ? OutlinedButton(
+                      onPressed: () async {
+                        showDialog(
+                            context: context,
+                            builder: (Context) {
+                              return const Dialog(
+                                  insetPadding: EdgeInsets.all(10),
+                                  child: SizedBox(
+                                    width: double.infinity,
+                                    height: 200,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Text(
+                                          "Video Uploading...",
+                                          style: TextStyle(fontSize: 20),
+                                        ),
+                                        CircularProgressIndicator(),
+                                      ],
+                                    ),
+                                  ));
+                            });
+                        await ApiService.EnrollCourse(
+                            courseModel.id, user['_id']);
+                        Navigator.pop(context);
+                        // QuickAlert.show(context: context,type: QuickAlertType.success,
+                        // title: 'Seccessfully Enrolled',);
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                            Theme.of(context).primaryColor),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'Enroll',
+                          style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
+                    )
+                  : const SizedBox(),
+              const SizedBox(
+                height: 20,
+              ),
             ],
           ),
         ),

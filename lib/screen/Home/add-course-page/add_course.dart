@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 import 'dart:io';
+
 import 'package:brava/api/api_service.dart';
 import 'package:brava/input_field.dart';
 import 'package:brava/model/video_model.dart';
@@ -32,6 +33,7 @@ class AddMyCourse extends StatefulWidget {
     this.videoType = ImageType.File,
     required this.appBarTitle,
     required this.textOfButton,
+    this.courseId, required this.authorId,
   });
   int numberOfVideos;
   String? selectedImage;
@@ -42,14 +44,14 @@ class AddMyCourse extends StatefulWidget {
   ImageType videoType;
   final String appBarTitle;
   final String textOfButton;
-
+  final String? courseId;
+  final String authorId;
   @override
   State<AddMyCourse> createState() => _AddMyCourseState();
 }
 
 class _AddMyCourseState extends State<AddMyCourse> {
   getImage(ImageType status) {
-    print(widget.selectedImage);
     switch (status) {
       case ImageType.Network:
         return widget.selectedImage!;
@@ -59,12 +61,15 @@ class _AddMyCourseState extends State<AddMyCourse> {
   }
 
   Future _pickImageFromGallery() async {
-    final returnedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final returnedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     if (returnedImage == null) return;
     setState(() {
       widget.selectedImage = returnedImage.path;
+      widget.selectedImageType = ImageType.File;
     });
   }
+
   Future _pickVideoFromGallery(int index) async {
     final returnedVideo =
         await ImagePicker().pickVideo(source: ImageSource.gallery);
@@ -82,11 +87,13 @@ class _AddMyCourseState extends State<AddMyCourse> {
         .ref()
         .child('courseBackgroundImages')
         .child(widget.courseNameController.text)
-        .child('$addID.jpg');
-    final UploadTask task =
-        FirebaseStorageref.putFile(File(getImage(ImageType.File)));
-    backgroundImageUrl = await (await task).ref.getDownloadURL();
-    print('backgroundurl =========================> $backgroundImageUrl');
+        .child('$addID-${DateTime.now()}.jpg');
+    final UploadTask task = FirebaseStorageref.putFile(
+      File(
+        getImage(ImageType.File),
+      ),
+    );
+    widget.selectedImage = await (await task).ref.getDownloadURL();
   }
 
   Future uploadCourseVideos(File file, int index, String videoname) async {
@@ -100,6 +107,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
       final UploadTask task = FirebaseStorageref.putFile(file);
       widget.controllers[index].videoUrl =
           await (await task).ref.getDownloadURL();
+      widget.controllers[index].videoType = ImageType.Network;
     }
   }
 
@@ -148,15 +156,16 @@ class _AddMyCourseState extends State<AddMyCourse> {
                             width: double.infinity,
                             height: 160,
                             child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child:
-                                    widget.selectedImageType == ImageType.File
-                                        ? Image.file(
-                                            File(getImage(ImageType.File)),
-                                            fit: BoxFit.cover,
-                                          )
-                                        : Image.network(
-                                            getImage(ImageType.Network))),
+                              borderRadius: BorderRadius.circular(10),
+                              child: widget.selectedImageType == ImageType.File
+                                  ? Image.file(
+                                      File(getImage(ImageType.File)),
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.network(
+                                      getImage(ImageType.Network),
+                                    ),
+                            ),
                           ),
                         ),
                         Positioned(
@@ -205,7 +214,10 @@ class _AddMyCourseState extends State<AddMyCourse> {
                                 Text(
                                   "Select Background Image for your Course",
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 16),
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
                                 ),
                                 const Gap(10),
                                 Container(
@@ -213,7 +225,9 @@ class _AddMyCourseState extends State<AddMyCourse> {
                                   height: 50,
                                   decoration: BoxDecoration(
                                     border: Border.all(
-                                      color: Theme.of(context).primaryColor.withOpacity(.6),
+                                      color: Theme.of(context)
+                                          .primaryColor
+                                          .withOpacity(.6),
                                     ),
                                     borderRadius: const BorderRadius.all(
                                       Radius.circular(50),
@@ -250,7 +264,8 @@ class _AddMyCourseState extends State<AddMyCourse> {
 
               //videos Text and add icon
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -309,7 +324,6 @@ class _AddMyCourseState extends State<AddMyCourse> {
                         )
                       : VideoPlayerController.networkUrl(
                           Uri.parse(widget.controllers[i].videoUrl)),
-
                 ),
 
               const Gap(10),
@@ -317,6 +331,11 @@ class _AddMyCourseState extends State<AddMyCourse> {
               //publish Button
               GestureDetector(
                 onTap: () async {
+                  print(widget.selectedImageType);
+                  for (int i = 0; i < widget.controllers.length; i++) {
+                    print(
+                        '$i =================> ${widget.controllers[i].videoType}');
+                  }
                   if (widget.numberOfVideos == 0) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -358,7 +377,8 @@ class _AddMyCourseState extends State<AddMyCourse> {
                                   width: double.infinity,
                                   height: 200,
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Text(
                                         "Video Uploading...",
@@ -369,20 +389,27 @@ class _AddMyCourseState extends State<AddMyCourse> {
                                   ),
                                 ));
                           });
-                      await uploadBackgroundImage();
-                      for (int i = 0; i < widget.numberOfVideos; i++) {
-                        await uploadCourseVideos(
-                            File(widget.controllers[i].videoUrl),
-                            i,
-                            widget.controllers[i].videoTitle.text);
-                        log('upload=================================>$i');
+                      if (widget.selectedImageType == ImageType.File) {
+                        await uploadBackgroundImage();
                       }
-
+                      for (int i = 0; i < widget.numberOfVideos; i++) {
+                        if (widget.controllers[i].videoType == ImageType.File) {
+                          await uploadCourseVideos(
+                              File(widget.controllers[i].videoUrl),
+                              i,
+                              widget.controllers[i].videoTitle.text);
+                          log('upload=================================>$i');
+                        }
+                      }
+                      log('data==================================>');
+                      print(widget.selectedImage);
+                      print(widget.courseNameController.text);
+                      log('data==================================>');
                       Map<String, dynamic> course = {
-                        'backgroundImage': backgroundImageUrl,
+                        'backgroundImage': widget.selectedImage,
                         'name': widget.courseNameController.text,
                         'description': widget.courseDescriptionController.text,
-                        'author': '65da3e9a03319490bcc5b81c',
+                        'author': widget.authorId,
                         'videos': [
                           for (int i = 0; i < widget.numberOfVideos; i++)
                             {
@@ -395,8 +422,10 @@ class _AddMyCourseState extends State<AddMyCourse> {
                         'price': 15,
                         'numberOfStudents': 0,
                       };
-                      print(course);
-                      await ApiService.addCourse(course);
+                      widget.appBarTitle == 'Add Course'
+                          ? await ApiService.addCourse(course)
+                          : await ApiService.updateCourse(
+                              widget.courseId!, course);
                       Navigator.pop(context);
                       QuickAlert.show(
                         context: context,
@@ -405,16 +434,21 @@ class _AddMyCourseState extends State<AddMyCourse> {
                         title: 'Course Added Successfully',
                         confirmBtnText: 'Ok',
                       );
-                      widget.selectedImage = null;
-                      widget.courseNameController.clear();
-                      widget.courseDescriptionController.clear();
-                      widget.controllers.clear();
-                      widget.controllers = [
-                        Video(
-                            videoTitle: TextEditingController(), videoUrl: ''),
-                      ];
-                      widget.numberOfVideos = 1;
-                      setState(() {});
+
+                      if (widget.appBarTitle == 'Add Course') {
+                        widget.selectedImage = null;
+                        widget.courseNameController.clear();
+                        widget.courseDescriptionController.clear();
+                        widget.controllers.clear();
+                        widget.controllers = [
+                          Video(
+                              videoTitle: TextEditingController(),
+                              videoUrl: ''),
+                        ];
+                        widget.numberOfVideos = 1;
+                        setState(() {});
+                      }
+                      Navigator.pop(context);
                     }
                   } else {
                     provider.showSnackBar('Fix the Error', context);

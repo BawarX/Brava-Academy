@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:brava/api/api_service.dart';
 import 'package:brava/constant.dart';
 import 'package:brava/data/course_data.dart';
@@ -32,14 +33,14 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     fetchData();
+    
   }
 
   @override
   Widget build(BuildContext context) {
-    String userNmae =
-        jsonDecode(sharedPreferences.getString('user')!)['firstname'] ?? "User";
+    final user = jsonDecode(sharedPreferences.getString('user')!);
+    String userNmae = user['firstname'] ?? "User";
     final provider = Provider.of<BookmarkProvider>(context, listen: true);
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -53,7 +54,7 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Gap(10),
-                upperWidgets(userNmae: userNmae),
+                upperWidgets(userNmae: userNmae,userId: user['_id'],),
                 const Padding(
                   padding: EdgeInsets.only(left: 5, top: 10),
                   child: Text(
@@ -174,6 +175,7 @@ class _HomePageState extends State<HomePage> {
                                   MaterialPageRoute(
                                     builder: (context) => CourseDetail(
                                       courseModel: courseModel,
+                                      authorName: courseModel.authorName,
                                     ),
                                   ),
                                 );
@@ -360,10 +362,11 @@ class _HomePageState extends State<HomePage> {
 class upperWidgets extends StatelessWidget {
   const upperWidgets({
     super.key,
-    required this.userNmae,
+    required this.userNmae, required this.userId,
   });
 
   final String userNmae;
+  final String userId;
 
   @override
   Widget build(BuildContext context) {
@@ -411,6 +414,7 @@ class upperWidgets extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => AddMyCourse(
+                  authorId: userId,
                   appBarTitle: 'Add Course',
                   textOfButton: 'Publish',
                   controllers: [

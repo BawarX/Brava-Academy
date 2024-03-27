@@ -2,7 +2,6 @@ import 'package:brava/constant.dart';
 import 'package:brava/firebase_options.dart';
 import 'package:brava/provider/bookmark.dart';
 import 'package:brava/provider/input_field_provider.dart';
-import 'package:brava/screen/Home/home_page.dart';
 import 'package:brava/screen/Home/nav_bar.dart';
 import 'package:brava/screen/authentication/start_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -48,7 +47,9 @@ class MyApp extends StatelessWidget {
           ),
         ),
         debugShowCheckedModeBanner: false,
-        home: sharedPreferences.getString('user') == null ? const Screen1() : const NavBar(),
+        home: sharedPreferences.getString('user') == null
+            ? const Screen1()
+            : const NavBar(),
         // home: const VideoPlayerClass(),
       ),
     );

@@ -1,7 +1,3 @@
-import 'dart:convert';
-
-import 'package:brava/model/video_model.dart';
-
 class CourseModel {
   String id;
   int rank;
@@ -12,10 +8,13 @@ class CourseModel {
   String description;
   String authorId;
   List videos;
+  String authorName;
   bool isBookmarked;
+  List students;
 
   CourseModel({
     required this.authorId,
+    required this.authorName,
     required this.videos,
     required this.id,
     required this.rank,
@@ -25,16 +24,19 @@ class CourseModel {
     required this.isBookmarked,
     required this.image,
     required this.description,
+    required this.students,
   });
 
   static CourseModel fromJson(e) {
     return CourseModel(
         id: e['_id'],
-        videos: e['videos'] ,
+        videos: e['videos'],
         rank: e['numberOfStudents'],
         courseTitle: e['name'],
         duration: '15',
         authorId: e['author']['_id'],
+        authorName: "${e['author']['firstname']} ${e['author']['lastname']}",
+        students: e['Students'],
         price: e['price'].toString(),
         isBookmarked: true,
         image: e['backgroundImage'],

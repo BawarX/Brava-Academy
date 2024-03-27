@@ -6,7 +6,6 @@ import 'package:brava/data/course_data.dart';
 import 'package:brava/data/instructor_data.dart';
 import 'package:brava/model/courses.dart';
 import 'package:brava/model/instructor_model.dart';
-import 'package:brava/screen/Home/home_page.dart';
 import 'package:brava/screen/Home/nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -43,9 +42,8 @@ class ApiService {
                 text: 'Login Successfully',
                 type: QuickAlertType.success,
                 context: context);
-                
+            sharedPreferences.setBool('isLogin', true);
             sharedPreferences.setString('user', jsonEncode(data));
-            await fetchData();
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
@@ -96,10 +94,11 @@ class ApiService {
               type: QuickAlertType.success,
               context: context);
           sharedPreferences.setString('user', jsonEncode(data['data']));
-
           sharedPreferences.setBool('isLogin', true);
-          //fetchData();
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const NavBar()), (route) => false);
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const NavBar()),
+              (route) => false);
         } else {
           showQuickAlert(
               title: 'Error',
@@ -166,6 +165,21 @@ class ApiService {
     var res = await http.delete(
       Uri.parse('http://10.0.2.2:3000/course/delete-course-by-id/$courseId'),
     );
+    var body = jsonDecode(res.body);
+    print(body);
+  }
+
+  static updateCourse(String courseId, Map<String, dynamic> courseData) async {
+    final res = await http.put(
+        Uri.parse('http://10.0.2.2:3000/course/update-course-by-id/$courseId'),
+        body: {'data': jsonEncode(courseData)});
+    var body = jsonDecode(res.body);
+    print(body);
+  }
+
+  static EnrollCourse(String courseId, String userId) async {
+    final res = await http.post(Uri.parse(
+        'http://10.0.2.2:3000/course/enroll-course/$courseId/$userId'));
     var body = jsonDecode(res.body);
     print(body);
   }

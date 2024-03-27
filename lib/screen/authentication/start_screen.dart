@@ -1,3 +1,4 @@
+import 'package:brava/constant.dart';
 import 'package:brava/screen/authentication/log_in.dart';
 import 'package:brava/screen/authentication/sign_up.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,8 @@ class Screen1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(sharedPreferences.getBool('isLogin'));
+    print(sharedPreferences.getString('user'));
     return Scaffold(
       body: Column(
         children: [

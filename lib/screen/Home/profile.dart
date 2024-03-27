@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:brava/api/api_service.dart';
 import 'package:brava/constant.dart';
 import 'package:brava/data/course_data.dart';
@@ -109,11 +110,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     shadowColor: MaterialStatePropertyAll(Colors.purple),
                   ),
                   onPressed: () async {
+                    print(sharedPreferences.getBool('isLogin'));
+                    print(sharedPreferences.getString('user'));
                     await sharedPreferences.clear();
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const Screen1()));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Screen1(),
+                      ),
+                    );
                   },
                   child: const Text("Sign out"),
                 ),
@@ -265,6 +270,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => AddMyCourse(
+                                          authorId: user['_id'],
+                                          courseId: courseData[index].id,
                                           appBarTitle: 'Edit Course',
                                           textOfButton: 'Update',
                                           controllers: [
@@ -342,13 +349,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   child: Container(
                                     width: 100,
                                     height: 100,
-                                    decoration: const BoxDecoration(
+                                    decoration: BoxDecoration(
                                       shape: BoxShape.rectangle,
-                                      // image: DecorationImage(
-                                      //   image: NetworkImage(courseData[index].image),
-                                      //   fit: BoxFit.cover,
-                                      // ),
-                                      borderRadius: BorderRadius.only(
+                                      image: DecorationImage(
+                                        image: NetworkImage(
+                                            courseData[index].image),
+                                        fit: BoxFit.cover,
+                                      ),
+                                      borderRadius: const BorderRadius.only(
                                         topLeft: Radius.circular(25),
                                         bottomLeft: Radius.circular(25),
                                       ),

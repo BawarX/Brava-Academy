@@ -7,6 +7,7 @@ import 'package:brava/data/instructor_data.dart';
 import 'package:brava/model/courses.dart';
 import 'package:brava/model/instructor_model.dart';
 import 'package:brava/screen/Home/home_page.dart';
+import 'package:brava/screen/Home/nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:quickalert/quickalert.dart';
@@ -48,7 +49,7 @@ class ApiService {
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => const HomePage(),
+                builder: (context) => const NavBar(),
               ),
               (route) => false,
             );
@@ -95,11 +96,10 @@ class ApiService {
               type: QuickAlertType.success,
               context: context);
           sharedPreferences.setString('user', jsonEncode(data['data']));
-          await fetchData();
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
-              (route) => false);
+
+          sharedPreferences.setBool('isLogin', true);
+          //fetchData();
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const NavBar()), (route) => false);
         } else {
           showQuickAlert(
               title: 'Error',
@@ -123,6 +123,7 @@ class ApiService {
     if (response.statusCode == 200) {
       List<CourseModel> course = [];
       List<Instructor> instructordata = [];
+
       await body.forEach((element) {
         course.add(CourseModel.fromJson(element));
         instructordata.add(
@@ -143,7 +144,7 @@ class ApiService {
     );
     if (response.statusCode == 200) {
       final body = jsonDecode(response.body);
-      print(body);
+
       return body as List;
     } else {
       print('have erroooooooorrrrrrrrrrrrrrrrrrrrr=====================');

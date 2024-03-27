@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:brava/api/api_service.dart';
 import 'package:brava/constant.dart';
 import 'package:brava/data/course_data.dart';
@@ -13,6 +12,7 @@ import 'package:brava/screen/Home/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,6 +22,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late SharedPreferences prefs;
   void fetchData() async {
     await ApiService.fetchData();
     setState(() {});
@@ -261,7 +262,10 @@ class _HomePageState extends State<HomePage> {
                                                         .spaceEvenly,
                                                 children: [
                                                   GestureDetector(
-                                                    onTap: () {
+                                                    onTap: () async {
+                                                      SharedPreferences prefs =
+                                                          await SharedPreferences
+                                                              .getInstance();
                                                       setState(() {
                                                         courseModel
                                                                 .isBookmarked =
@@ -271,9 +275,17 @@ class _HomePageState extends State<HomePage> {
                                                             .isBookmarked) {
                                                           provider.addItem(
                                                               courseModel);
+                                                          prefs.setBool(
+                                                              courseModel
+                                                                      .isBookmarked
+                                                                  as String,
+                                                              true);
                                                         } else {
                                                           provider.removeItem(
                                                               courseModel);
+                                                          prefs.remove(courseModel
+                                                                  .isBookmarked
+                                                              as String);
                                                         }
                                                       });
                                                     },

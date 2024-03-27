@@ -1,10 +1,10 @@
 import 'dart:convert';
-
 import 'package:brava/api/api_service.dart';
 import 'package:brava/constant.dart';
 import 'package:brava/data/course_data.dart';
 import 'package:brava/model/video_model.dart';
 import 'package:brava/screen/Home/add-course-page/add_course.dart';
+import 'package:brava/screen/authentication/start_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:gap/gap.dart';
@@ -39,20 +39,90 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String name = "${user['firstname']} ${user['lastname']}";
+    String firstName = "${user['firstname']} ";
+    String lastName = "${user['lastname']} ";
+    String image = "${user['image']} ";
+    String email = "${user['email']} ";
+    String pass = "${user['password']} ";
+    String id = "${user['_id']} ";
 
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back_ios_new,
-            color: Theme.of(context).primaryColor,
+      drawer: Drawer(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Gap(30),
+              Center(
+                child: Stack(
+                  children: [
+                    CircleAvatar(
+                      backgroundImage:
+                          image.isNotEmpty ? NetworkImage(image) : null,
+                      maxRadius: 45,
+                    ),
+                    Positioned(
+                      top: 65,
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        width: 35,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(15),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              spreadRadius: 1,
+                              blurRadius: 1,
+                              offset: const Offset(
+                                  0, 1.5), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        child: GestureDetector(
+                          child: Icon(
+                            Icons.add_a_photo,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Gap(50),
+              Text("First Name: $firstName"),
+              Text("last Name: $lastName"),
+              Text("email: $email"),
+              Text("pass: $pass"),
+              Text("ID(test): $id"),
+              const Spacer(),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: const ButtonStyle(
+                    foregroundColor: MaterialStatePropertyAll(Colors.black),
+                    surfaceTintColor: MaterialStatePropertyAll(Colors.purple),
+                    shadowColor: MaterialStatePropertyAll(Colors.purple),
+                  ),
+                  onPressed: () async {
+                    await sharedPreferences.clear();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Screen1()));
+                  },
+                  child: const Text("Sign out"),
+                ),
+              ),
+            ],
           ),
         ),
       ),
+      appBar: AppBar(),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
@@ -70,7 +140,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             const Gap(15),
             Text(
-              name,
+              '$firstName $lastName',
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
@@ -126,11 +196,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ),
-            // !snapshot.hasData
-            //     ? const Center(
-            //         child: CircularProgressIndicator(),
-            //       )
-            //     :
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListView.builder(
@@ -217,7 +282,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 videoUrl:
                                                     courseData[index].videos[i]
                                                         ['video${1 + i} url'],
-                                                        videoType: ImageType.Network,
+                                                videoType: ImageType.Network,
                                               ),
                                           ],
                                           numberOfVideos:
@@ -233,7 +298,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           selectedImage:
                                               courseData[index].image,
                                           selectedImageType: ImageType.Network,
-                                          
                                         ),
                                       ),
                                     );

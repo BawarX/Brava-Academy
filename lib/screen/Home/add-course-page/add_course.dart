@@ -2,7 +2,6 @@
 
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:brava/api/api_service.dart';
 import 'package:brava/input_field.dart';
 import 'package:brava/model/video_model.dart';
@@ -60,17 +59,16 @@ class _AddMyCourseState extends State<AddMyCourse> {
   }
 
   Future _pickImageFromGallery() async {
-    final returnedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    final returnedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (returnedImage == null) return;
     setState(() {
       widget.selectedImage = returnedImage.path;
     });
   }
-
   Future _pickVideoFromGallery(int index) async {
     final returnedVideo =
         await ImagePicker().pickVideo(source: ImageSource.gallery);
+
     if (returnedVideo == null) return;
     setState(() {
       widget.controllers[index].videoUrl = returnedVideo.path;
@@ -207,10 +205,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
                                 Text(
                                   "Select Background Image for your Course",
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
+                                  style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: 16),
                                 ),
                                 const Gap(10),
                                 Container(
@@ -218,9 +213,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
                                   height: 50,
                                   decoration: BoxDecoration(
                                     border: Border.all(
-                                      color: Theme.of(context)
-                                          .primaryColor
-                                          .withOpacity(.6),
+                                      color: Theme.of(context).primaryColor.withOpacity(.6),
                                     ),
                                     borderRadius: const BorderRadius.all(
                                       Radius.circular(50),
@@ -257,8 +250,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
 
               //videos Text and add icon
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5),
+                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -317,6 +309,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
                         )
                       : VideoPlayerController.networkUrl(
                           Uri.parse(widget.controllers[i].videoUrl)),
+
                 ),
 
               const Gap(10),
@@ -359,9 +352,22 @@ class _AddMyCourseState extends State<AddMyCourse> {
                       showDialog(
                           context: context,
                           builder: (Context) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
+                            return const Dialog(
+                                insetPadding: EdgeInsets.all(10),
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  height: 200,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Text(
+                                        "Video Uploading...",
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                      CircularProgressIndicator(),
+                                    ],
+                                  ),
+                                ));
                           });
                       await uploadBackgroundImage();
                       for (int i = 0; i < widget.numberOfVideos; i++) {
@@ -436,6 +442,7 @@ class _AddMyCourseState extends State<AddMyCourse> {
                   ),
                 ),
               ),
+              const Gap(15),
             ],
           ),
         ),

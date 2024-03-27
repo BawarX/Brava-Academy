@@ -11,8 +11,7 @@ import 'package:gap/gap.dart';
 class CourseDetail extends StatelessWidget {
   CourseDetail({super.key, required this.courseModel});
   CourseModel courseModel;
-  String userNmae = "Bawar khalid";
-
+  //String userNmae = courseModel.authorId;
   double rate = 4.4;
 
   @override
@@ -40,14 +39,23 @@ class CourseDetail extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.asset(
-                'assets/images/course1.png',
-                width: 400,
+              SizedBox(
+                height: 250,
+                width: double.infinity,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(25),
+                  child: Image.network(
+                    courseModel.image,
+                    fit: BoxFit.fill,
+                  ),
+                ),
               ),
-              const Text(
-                "Web Full Stack Course",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              const Gap(5),
+              Text(
+                courseModel.courseTitle,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
+              const Gap(5),
               Row(
                 children: [
                   const Gap(10),
@@ -56,9 +64,9 @@ class CourseDetail extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        userNmae,
-                        style: const TextStyle(
+                      const Text(
+                        'author name here please',
+                        style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
@@ -73,7 +81,7 @@ class CourseDetail extends StatelessWidget {
                   ),
                   const Spacer(),
                   Text(
-                    '70\$',
+                    'free',
                     style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20),
                   )
                 ],
@@ -82,25 +90,35 @@ class CourseDetail extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    courseModel.description,
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  const Text(
+                    'Description',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  const Text("In this course you will learn a lot about basic web developement and an essential programming language with javascript")
+                  Text(courseModel.description)
                 ],
               ),
               const Gap(10),
               const Text("Lessons"),
               Expanded(
                 child: ListView.builder(
-                  itemCount: 5,
+                  itemCount: courseModel.videos.length,
                   itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          // play
-                        },
+                    final courseUrl = courseModel.videos[index];
+                    return GestureDetector(
+                      onTap: () {
+                        print('this issssssssssssssssss $courseUrl');
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => PlayVideo(
+                        //       videoURL: courseUrl,
+                        //       videoName: 'video',
+                        //     ),
+                        //   ),
+                        // );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
                         child: Container(
                           width: double.infinity,
                           height: 70,
@@ -111,8 +129,8 @@ class CourseDetail extends StatelessWidget {
                                 color: Colors.grey,
                               )),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
+                              const Gap(15),
                               Container(
                                 width: 38,
                                 height: 38,
@@ -122,14 +140,10 @@ class CourseDetail extends StatelessWidget {
                                 ),
                                 child: const Icon(Icons.play_arrow),
                               ),
+                              const Gap(15),
                               const Text(
-                                "Basic HTML",
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                'Test Name',
                               ),
-                              const Text(
-                                "10:15",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              )
                             ],
                           ),
                         ),

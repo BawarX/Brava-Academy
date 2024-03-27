@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:brava/model/video_model.dart';
+
 class CourseModel {
   String id;
   int rank;

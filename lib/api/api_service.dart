@@ -94,13 +94,13 @@ class ApiService {
   static fetchData() async {
     var url = Uri.parse('http://10.0.2.2:3000/course/home');
     final response = await http.get(url);
-    print(response.body.toString());
+
     var body = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
-      log("dachma iffffffffffffffffffff");
       List<CourseModel> course = [];
       List<Instructor> instructordata = [];
+
       await body.forEach((element) {
         course.add(CourseModel.fromJson(element));
         instructordata.add(Instructor.fromJson(element['author'] as Map<String, dynamic>));
@@ -119,7 +119,7 @@ class ApiService {
     );
     if (response.statusCode == 200) {
       final body = jsonDecode(response.body);
-      print(body);
+
       return body as List;
     } else {
       print('have erroooooooorrrrrrrrrrrrrrrrrrrrr=====================');

@@ -10,6 +10,7 @@ import 'package:brava/provider/bookmark.dart';
 import 'package:brava/screen/Home/add-course-page/add_course.dart';
 import 'package:brava/screen/Home/course_detail.dart';
 import 'package:brava/screen/Home/profile.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +34,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     fetchData();
-    
   }
 
   @override
@@ -54,7 +54,10 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Gap(10),
-                upperWidgets(userNmae: userNmae,userId: user['_id'],),
+                upperWidgets(
+                  userNmae: userNmae,
+                  userId: user['_id'],
+                ),
                 const Padding(
                   padding: EdgeInsets.only(left: 5, top: 10),
                   child: Text(
@@ -116,8 +119,7 @@ class _HomePageState extends State<HomePage> {
                             child: Column(
                               children: [
                                 CircleAvatar(
-                                  backgroundImage:
-                                      AssetImage(instructorData[index].image),
+                                  backgroundImage: AssetImage(instructorData[index].image),
                                 ),
                                 Text(
                                   instructorData[index].name,
@@ -163,9 +165,7 @@ class _HomePageState extends State<HomePage> {
                     : Expanded(
                         child: GridView.builder(
                           itemCount: courseData.length,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2, mainAxisExtent: 220),
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisExtent: 220),
                           itemBuilder: (context, index) {
                             CourseModel courseModel = courseData[index];
                             return GestureDetector(
@@ -176,6 +176,7 @@ class _HomePageState extends State<HomePage> {
                                     builder: (context) => CourseDetail(
                                       courseModel: courseModel,
                                       authorName: courseModel.authorName,
+                                      authorImage: courseModel.authorImage,
                                     ),
                                   ),
                                 );
@@ -193,24 +194,35 @@ class _HomePageState extends State<HomePage> {
                                         color: Colors.grey.withOpacity(0.3),
                                         spreadRadius: 2,
                                         blurRadius: 0.5,
-                                        offset: const Offset(0,
-                                            1.5), // changes position of shadow
+                                        offset: const Offset(0, 1.5), // changes position of shadow
                                       ),
                                     ],
                                   ),
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      const Gap(5),
                                       Stack(
                                         children: [
-                                          SizedBox(
+                                          Container(
                                             width: double.infinity,
                                             height: 140,
-                                            child: Image.network(
-                                              courseModel.image,
-                                              fit: BoxFit.cover,
+                                            decoration: const BoxDecoration(
+                                              borderRadius: BorderRadius.all(Radius.circular(15)),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Color.fromARGB(255, 199, 197, 197),
+                                                  spreadRadius: 2,
+                                                  blurRadius: 0.5,
+                                                  offset: Offset(0, 2), // changes position of shadow
+                                                ),
+                                              ],
+                                            ),
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(15),
+                                              child: Image.network(
+                                                courseModel.image,
+                                                fit: BoxFit.cover,
+                                              ),
                                             ),
                                           ),
                                           Positioned(
@@ -221,15 +233,12 @@ class _HomePageState extends State<HomePage> {
                                               height: 20,
                                               decoration: BoxDecoration(
                                                 color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(
+                                                borderRadius: BorderRadius.circular(
                                                   10,
                                                 ),
                                               ),
                                               child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
+                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                 children: [
                                                   const Icon(
                                                     Icons.star,
@@ -238,8 +247,7 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                                   Text(
                                                     courseModel.rank.toString(),
-                                                    style: const TextStyle(
-                                                        fontSize: 12),
+                                                    style: const TextStyle(fontSize: 12),
                                                   ),
                                                 ],
                                               ),
@@ -253,61 +261,38 @@ class _HomePageState extends State<HomePage> {
                                               height: 25,
                                               decoration: BoxDecoration(
                                                 color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(
+                                                borderRadius: BorderRadius.circular(
                                                   10,
                                                 ),
                                               ),
                                               child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
+                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                 children: [
                                                   GestureDetector(
                                                     onTap: () async {
-                                                      SharedPreferences prefs =
-                                                          await SharedPreferences
-                                                              .getInstance();
+                                                      SharedPreferences prefs = await SharedPreferences.getInstance();
                                                       setState(() {
-                                                        courseModel
-                                                                .isBookmarked =
-                                                            !courseModel
-                                                                .isBookmarked;
-                                                        if (courseModel
-                                                            .isBookmarked) {
-                                                          provider.addItem(
-                                                              courseModel);
-                                                          prefs.setBool(
-                                                              courseModel
-                                                                      .isBookmarked
-                                                                  as String,
-                                                              true);
+                                                        courseModel.isBookmarked = !courseModel.isBookmarked;
+                                                        if (courseModel.isBookmarked) {
+                                                          provider.addItem(courseModel);
+                                                          prefs.setBool(courseModel.isBookmarked as String, true);
                                                         } else {
-                                                          provider.removeItem(
-                                                              courseModel);
-                                                          prefs.remove(courseModel
-                                                                  .isBookmarked
-                                                              as String);
+                                                          provider.removeItem(courseModel);
+                                                          prefs.remove(courseModel.isBookmarked as String);
                                                         }
                                                       });
                                                     },
-                                                    child:
-                                                        courseModel.isBookmarked
-                                                            ? Icon(
-                                                                Icons.bookmark,
-                                                                size: 18,
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .primaryColor,
-                                                              )
-                                                            : Icon(
-                                                                Icons
-                                                                    .bookmark_outline,
-                                                                size: 18,
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .primaryColor,
-                                                              ),
+                                                    child: courseModel.isBookmarked
+                                                        ? Icon(
+                                                            Icons.bookmark,
+                                                            size: 18,
+                                                            color: Theme.of(context).primaryColor,
+                                                          )
+                                                        : Icon(
+                                                            Icons.bookmark_outline,
+                                                            size: 18,
+                                                            color: Theme.of(context).primaryColor,
+                                                          ),
                                                   ),
                                                 ],
                                               ),
@@ -317,8 +302,7 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       const Gap(10),
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 5.0),
+                                        padding: const EdgeInsets.only(left: 5.0),
                                         child: Text(
                                           courseModel.courseTitle,
                                           style: const TextStyle(
@@ -331,11 +315,9 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       const Spacer(),
                                       Padding(
-                                        padding: const EdgeInsets.only(
-                                            bottom: 5, left: 5, right: 5),
+                                        padding: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
                                         child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text('${courseModel.duration} H'),
                                             Text(courseModel.price),
@@ -362,7 +344,8 @@ class _HomePageState extends State<HomePage> {
 class upperWidgets extends StatelessWidget {
   const upperWidgets({
     super.key,
-    required this.userNmae, required this.userId,
+    required this.userNmae,
+    required this.userId,
   });
 
   final String userNmae;

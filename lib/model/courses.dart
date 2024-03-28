@@ -9,6 +9,7 @@ class CourseModel {
   String authorId;
   List videos;
   String authorName;
+  String authorImage;
   bool isBookmarked;
   List students;
 
@@ -22,6 +23,7 @@ class CourseModel {
     required this.duration,
     required this.price,
     required this.isBookmarked,
+    required this.authorImage,
     required this.image,
     required this.description,
     required this.students,
@@ -36,6 +38,7 @@ class CourseModel {
         duration: '15',
         authorId: e['author']['_id'],
         authorName: "${e['author']['firstname']} ${e['author']['lastname']}",
+        authorImage: e['author']['image'],
         students: e['Students'],
         price: e['price'].toString(),
         isBookmarked: true,

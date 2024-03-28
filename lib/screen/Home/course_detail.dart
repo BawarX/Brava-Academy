@@ -10,10 +10,10 @@ import 'package:gap/gap.dart';
 import 'package:quickalert/quickalert.dart';
 
 class CourseDetail extends StatelessWidget {
-  CourseDetail(
-      {super.key, required this.courseModel, required this.authorName});
+  CourseDetail({super.key, required this.courseModel, required this.authorName, required this.authorImage});
   CourseModel courseModel;
   String authorName;
+  String authorImage;
   double rate = 4.4;
   final user = jsonDecode(sharedPreferences.getString('user')!);
   @override
@@ -73,14 +73,15 @@ class CourseDetail extends StatelessWidget {
               const Gap(5),
               Text(
                 courseModel.courseTitle,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               const Gap(5),
               Row(
                 children: [
                   const Gap(10),
-                  const CircleAvatar(),
+                  CircleAvatar(
+                    backgroundImage: NetworkImage(authorImage),
+                  ),
                   const Gap(5),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,8 +104,7 @@ class CourseDetail extends StatelessWidget {
                   const Spacer(),
                   Text(
                     'free',
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor, fontSize: 20),
+                    style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20),
                   )
                 ],
               ),
@@ -156,8 +156,7 @@ class CourseDetail extends StatelessWidget {
                           height: 70,
                           decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(15)),
+                              borderRadius: const BorderRadius.all(Radius.circular(15)),
                               border: Border.all(
                                 color: Colors.grey,
                               )),
@@ -174,10 +173,7 @@ class CourseDetail extends StatelessWidget {
                                 child: const Icon(Icons.play_arrow),
                               ),
                               const Gap(15),
-                              Text(
-                                  courseModel.videos[index]
-                                      ['video${index + 1} title'],
-                                  style: const TextStyle()),
+                              Text(courseModel.videos[index]['video${index + 1} title'], style: const TextStyle()),
                               const Spacer(),
                               !userEnrolled
                                   ? Icon(
@@ -208,8 +204,7 @@ class CourseDetail extends StatelessWidget {
                                     width: double.infinity,
                                     height: 200,
                                     child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: [
                                         Text(
                                           "Video Uploading...",
@@ -220,23 +215,18 @@ class CourseDetail extends StatelessWidget {
                                     ),
                                   ));
                             });
-                        await ApiService.EnrollCourse(
-                            courseModel.id, user['_id']);
+                        await ApiService.EnrollCourse(courseModel.id, user['_id']);
                         Navigator.pop(context);
                         // QuickAlert.show(context: context,type: QuickAlertType.success,
                         // title: 'Seccessfully Enrolled',);
                       },
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                            Theme.of(context).primaryColor),
+                        backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
                       ),
                       child: const Center(
                         child: Text(
                           'Enroll',
-                          style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
+                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
                         ),
                       ),
                     )

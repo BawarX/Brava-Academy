@@ -30,6 +30,11 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
+  Future<void> _refresh() async {
+    fetchData();
+    return Future.delayed(const Duration(seconds: 1));
+  }
+
   @override
   void initState() {
     super.initState();
@@ -163,173 +168,176 @@ class _HomePageState extends State<HomePage> {
                         ),
                       )
                     : Expanded(
-                        child: GridView.builder(
-                          itemCount: courseData.length,
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisExtent: 220),
-                          itemBuilder: (context, index) {
-                            CourseModel courseModel = courseData[index];
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => CourseDetail(
-                                      courseModel: courseModel,
-                                      authorName: courseModel.authorName,
-                                      authorImage: courseModel.authorImage,
+                        child: RefreshIndicator(
+                          onRefresh: _refresh,
+                          child: GridView.builder(
+                            itemCount: courseData.length,
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisExtent: 220),
+                            itemBuilder: (context, index) {
+                              CourseModel courseModel = courseData[index];
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => CourseDetail(
+                                        courseModel: courseModel,
+                                        authorName: courseModel.authorName,
+                                        authorImage: courseModel.authorImage,
+                                      ),
                                     ),
-                                  ),
-                                );
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(5),
-                                child: Container(
-                                  width: 200,
-                                  height: 200,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.3),
-                                        spreadRadius: 2,
-                                        blurRadius: 0.5,
-                                        offset: const Offset(0, 1.5), // changes position of shadow
-                                      ),
-                                    ],
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Stack(
-                                        children: [
-                                          Container(
-                                            width: double.infinity,
-                                            height: 140,
-                                            decoration: const BoxDecoration(
-                                              borderRadius: BorderRadius.all(Radius.circular(15)),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Color.fromARGB(255, 199, 197, 197),
-                                                  spreadRadius: 2,
-                                                  blurRadius: 0.5,
-                                                  offset: Offset(0, 2), // changes position of shadow
-                                                ),
-                                              ],
-                                            ),
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(15),
-                                              child: Image.network(
-                                                courseModel.image,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          ),
-                                          Positioned(
-                                            top: 5,
-                                            left: 5,
-                                            child: Container(
-                                              width: 40,
-                                              height: 20,
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.circular(
-                                                  10,
-                                                ),
-                                              ),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                children: [
-                                                  const Icon(
-                                                    Icons.star,
-                                                    size: 14,
-                                                    color: Colors.yellow,
-                                                  ),
-                                                  Text(
-                                                    courseModel.rank.toString(),
-                                                    style: const TextStyle(fontSize: 12),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          Positioned(
-                                            top: 5,
-                                            right: 5,
-                                            child: Container(
-                                              width: 30,
-                                              height: 25,
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.circular(
-                                                  10,
-                                                ),
-                                              ),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                children: [
-                                                  GestureDetector(
-                                                    onTap: () async {
-                                                      SharedPreferences prefs = await SharedPreferences.getInstance();
-                                                      setState(() {
-                                                        courseModel.isBookmarked = !courseModel.isBookmarked;
-                                                        if (courseModel.isBookmarked) {
-                                                          provider.addItem(courseModel);
-                                                          prefs.setBool(courseModel.isBookmarked as String, true);
-                                                        } else {
-                                                          provider.removeItem(courseModel);
-                                                          prefs.remove(courseModel.isBookmarked as String);
-                                                        }
-                                                      });
-                                                    },
-                                                    child: courseModel.isBookmarked
-                                                        ? Icon(
-                                                            Icons.bookmark,
-                                                            size: 18,
-                                                            color: Theme.of(context).primaryColor,
-                                                          )
-                                                        : Icon(
-                                                            Icons.bookmark_outline,
-                                                            size: 18,
-                                                            color: Theme.of(context).primaryColor,
-                                                          ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const Gap(10),
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 5.0),
-                                        child: Text(
-                                          courseModel.courseTitle,
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          textAlign: TextAlign.start,
+                                  );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5),
+                                  child: Container(
+                                    width: 200,
+                                    height: 200,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.3),
+                                          spreadRadius: 2,
+                                          blurRadius: 0.5,
+                                          offset: const Offset(0, 1.5), // changes position of shadow
                                         ),
-                                      ),
-                                      const Spacer(),
-                                      Padding(
-                                        padding: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      ],
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Stack(
                                           children: [
-                                            Text('${courseModel.duration} H'),
-                                            Text(courseModel.price),
+                                            Container(
+                                              width: double.infinity,
+                                              height: 140,
+                                              decoration: const BoxDecoration(
+                                                borderRadius: BorderRadius.all(Radius.circular(15)),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Color.fromARGB(255, 199, 197, 197),
+                                                    spreadRadius: 2,
+                                                    blurRadius: 0.5,
+                                                    offset: Offset(0, 2), // changes position of shadow
+                                                  ),
+                                                ],
+                                              ),
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(15),
+                                                child: Image.network(
+                                                  courseModel.image,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                            Positioned(
+                                              top: 5,
+                                              left: 5,
+                                              child: Container(
+                                                width: 40,
+                                                height: 20,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius: BorderRadius.circular(
+                                                    10,
+                                                  ),
+                                                ),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                  children: [
+                                                    const Icon(
+                                                      Icons.star,
+                                                      size: 14,
+                                                      color: Colors.yellow,
+                                                    ),
+                                                    Text(
+                                                      courseModel.rank.toString(),
+                                                      style: const TextStyle(fontSize: 12),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            Positioned(
+                                              top: 5,
+                                              right: 5,
+                                              child: Container(
+                                                width: 30,
+                                                height: 25,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius: BorderRadius.circular(
+                                                    10,
+                                                  ),
+                                                ),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () async {
+                                                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                                                        setState(() {
+                                                          courseModel.isBookmarked = !courseModel.isBookmarked;
+                                                          if (courseModel.isBookmarked) {
+                                                            provider.addItem(courseModel);
+                                                            prefs.setBool(courseModel.isBookmarked as String, true);
+                                                          } else {
+                                                            provider.removeItem(courseModel);
+                                                            prefs.remove(courseModel.isBookmarked as String);
+                                                          }
+                                                        });
+                                                      },
+                                                      child: courseModel.isBookmarked
+                                                          ? Icon(
+                                                              Icons.bookmark,
+                                                              size: 18,
+                                                              color: Theme.of(context).primaryColor,
+                                                            )
+                                                          : Icon(
+                                                              Icons.bookmark_outline,
+                                                              size: 18,
+                                                              color: Theme.of(context).primaryColor,
+                                                            ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
                                           ],
                                         ),
-                                      )
-                                    ],
+                                        const Gap(10),
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 5.0),
+                                          child: Text(
+                                            courseModel.courseTitle,
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            textAlign: TextAlign.start,
+                                          ),
+                                        ),
+                                        const Spacer(),
+                                        Padding(
+                                          padding: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text('${courseModel.duration} H'),
+                                              Text(courseModel.price),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         ),
                       ),
               ],

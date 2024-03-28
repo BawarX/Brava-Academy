@@ -66,7 +66,7 @@ class CourseDetail extends StatelessWidget {
                   borderRadius: BorderRadius.circular(25),
                   child: Image.network(
                     courseModel.image,
-                    fit: BoxFit.fill,
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),

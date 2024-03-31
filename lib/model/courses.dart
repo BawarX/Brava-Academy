@@ -41,7 +41,7 @@ class CourseModel {
         authorImage: e['author']['image'],
         students: e['Students'],
         price: e['price'].toString(),
-        isBookmarked: true,
+        isBookmarked: false,
         image: e['backgroundImage'],
         description: e['description']);
   }

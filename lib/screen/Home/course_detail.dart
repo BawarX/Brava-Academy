@@ -6,10 +6,12 @@ import 'package:brava/api/api_service.dart';
 import 'package:brava/constant.dart';
 import 'package:brava/model/courses.dart';
 import 'package:brava/model/video_model.dart';
-import 'package:brava/screen/Home/add-course-page/widgets/play_video.dart';
+import 'package:brava/screen/Home/add-course-page/widgets/video_player.dart';
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:quickalert/quickalert.dart';
+import 'package:video_player/video_player.dart';
 
 class CourseDetail extends StatelessWidget {
   CourseDetail({super.key, required this.courseModel, required this.authorName, required this.authorImage});
@@ -129,19 +131,22 @@ class CourseDetail extends StatelessWidget {
                   itemCount: courseModel.videos.length,
                   itemBuilder: (context, index) {
                     //final courseUrl = videoList[index].videoUrl;
-
+                    // Text(courseModel.videos[index]['video${index + 1} title'], style: const TextStyle()),
+                    final courseUrl = courseModel.videos[index]['video${index + 1} url'];
+                    final courseTitle = courseModel.videos[index]['video${index + 1} title'];
                     return GestureDetector(
                       onTap: () {
                         if (userEnrolled) {
-                          //  print('this issssssssssssssssss $courseUrl');
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => VideoPlayerScreen(
-                          //       videoList: courseModel.videos,
-                          //     ),
-                          //   ),
-                          // );
+                          //    print('this issssssssssssssssss $courseUrl');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => VideoPlayerScreen(
+                                videoUrl: courseUrl,
+                                videoName: courseTitle,
+                              ),
+                            ),
+                          );
                         } else {
                           QuickAlert.show(
                             context: context,

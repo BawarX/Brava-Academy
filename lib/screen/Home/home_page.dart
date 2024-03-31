@@ -175,6 +175,7 @@ class _HomePageState extends State<HomePage> {
                             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisExtent: 220),
                             itemBuilder: (context, index) {
                               CourseModel courseModel = courseData[index];
+
                               return GestureDetector(
                                 onTap: () {
                                   Navigator.push(

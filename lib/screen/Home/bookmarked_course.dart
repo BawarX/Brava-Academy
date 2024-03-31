@@ -92,9 +92,11 @@ class _BookMarkState extends State<BookMark> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(18),
                                 child: SizedBox(
-                                  width: 150,
-                                  child: Image.asset(
+                                  width: 155,
+                                  height: 100,
+                                  child: Image.network(
                                     provider.cards[index].image,
+                                    fit: BoxFit.fill,
                                   ),
                                 ),
                               ),
@@ -114,10 +116,10 @@ class _BookMarkState extends State<BookMark> {
                                     children: [
                                       CircleAvatar(
                                         radius: 15,
-                                        backgroundImage: AssetImage(provider.cards[index].image),
+                                        backgroundImage: NetworkImage(provider.cards[index].image),
                                       ),
                                       const Gap(10),
-                                      Text(provider.cards[index].courseTitle),
+                                      Text(provider.cards[index].authorName),
                                     ],
                                   ),
                                   LinearPercentIndicator(

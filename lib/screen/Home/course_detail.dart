@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'package:brava/api/api_service.dart';
 import 'package:brava/constant.dart';
 import 'package:brava/model/courses.dart';
+import 'package:brava/model/video_model.dart';
+import 'package:brava/screen/Home/add-course-page/widgets/play_video.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:quickalert/quickalert.dart';
@@ -15,6 +17,7 @@ class CourseDetail extends StatelessWidget {
   String authorName;
   String authorImage;
   double rate = 4.4;
+
   final user = jsonDecode(sharedPreferences.getString('user')!);
   @override
   Widget build(BuildContext context) {
@@ -125,17 +128,17 @@ class CourseDetail extends StatelessWidget {
                 child: ListView.builder(
                   itemCount: courseModel.videos.length,
                   itemBuilder: (context, index) {
-                    final courseUrl = courseModel.videos[index];
+                    //final courseUrl = videoList[index].videoUrl;
+
                     return GestureDetector(
                       onTap: () {
                         if (userEnrolled) {
-                          print('this issssssssssssssssss $courseUrl');
+                          //  print('this issssssssssssssssss $courseUrl');
                           // Navigator.push(
                           //   context,
                           //   MaterialPageRoute(
-                          //     builder: (context) => PlayVideo(
-                          //       videoURL: courseUrl,
-                          //       videoName: 'video',
+                          //     builder: (context) => VideoPlayerScreen(
+                          //       videoList: courseModel.videos,
                           //     ),
                           //   ),
                           // );

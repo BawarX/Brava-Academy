@@ -1,8 +1,10 @@
+import 'dart:convert';
+
+import 'package:brava/constant.dart';
 import 'package:brava/model/courses.dart';
 import 'package:brava/provider/bookmark.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:gap/gap.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
@@ -15,9 +17,36 @@ class BookMark extends StatefulWidget {
 }
 
 class _BookMarkState extends State<BookMark> {
+  List<CourseModel> bookmark = [];
+  void getData() {
+    print('hi2===================================');
+    List<String>? cardsListString = sharedPreferences.getStringList('bookmark');
+    print('hi3===================================');
+    if (cardsListString != null) {
+      // bookmark =
+      cardsListString.map((e) {
+        print(e);
+        return CourseModel.fromJsonforsharedpref(
+          jsonDecode(e),
+        );
+      }).toList();
+      print('hi4===================================');
+    }
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+    print('hi=========================');
+  }
+
   @override
   Widget build(BuildContext context) {
-    final bookmarkProvider = Provider.of<BookmarkProvider>(context, listen: true);
+    print(bookmark);
+    final bookmarkProvider =
+        Provider.of<BookmarkProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -103,7 +132,8 @@ class _BookMarkState extends State<BookMark> {
                               const Gap(10),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Text(
                                     provider.cards[index].courseTitle,
@@ -116,7 +146,8 @@ class _BookMarkState extends State<BookMark> {
                                     children: [
                                       CircleAvatar(
                                         radius: 15,
-                                        backgroundImage: NetworkImage(provider.cards[index].image),
+                                        backgroundImage: NetworkImage(
+                                            provider.cards[index].image),
                                       ),
                                       const Gap(10),
                                       Text(provider.cards[index].authorName),
@@ -127,7 +158,8 @@ class _BookMarkState extends State<BookMark> {
                                     lineHeight: 11.0,
                                     percent: 0.5,
                                     backgroundColor: Colors.grey,
-                                    progressColor: Theme.of(context).primaryColor,
+                                    progressColor:
+                                        Theme.of(context).primaryColor,
                                   ),
                                 ],
                               )

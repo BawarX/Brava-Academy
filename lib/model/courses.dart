@@ -30,6 +30,17 @@ class CourseModel {
   });
 
   static CourseModel fromJson(e) {
+    print(e['numberOfStudents']);
+    print(e['Students']);
+    print(e['price']);
+    print(e['videos']);
+    print(e['author']['_id']);
+    print(e['_id']);
+    print(e['author']['firstname']);
+    print(e['author']['lastname']);
+    print(e['author']['image']);
+    print(e['backgroundImage']);
+    print(e['description']);
     return CourseModel(
         id: e['_id'],
         videos: e['videos'],

@@ -121,29 +121,28 @@ class ApiService {
     print(body);
     if (response.statusCode == 200) {
       List<CourseModel> course = [];
-      List<Instructor> instructordata = [];
 
       await body.forEach((element) {
         course.add(CourseModel.fromJson(element));
-        instructordata.add(
+        instructorData.add(
             Instructor.fromJson(element['author'] as Map<String, dynamic>));
       });
       courseData = course;
-      instructorData = instructordata;
     } else {
       return [];
     }
     return;
   }
 
-  static Future<List> fetchusercourses() async {
+  static Future<List> fetchusercourses(String userId) async {
+    print('ggggggggggggggggggggggggggggggg');
     var response = await http.get(
       Uri.parse(
-          'http://10.0.2.2:3000/course/search-course-by-authorid/65da36fdb2e101cd2b9c3810'),
+          'http://10.0.2.2:3000/course/search-course-by-authorid/$userId'),
     );
     if (response.statusCode == 200) {
       final body = jsonDecode(response.body);
-
+      print(body);
       return body as List;
     } else {
       print('have erroooooooorrrrrrrrrrrrrrrrrrrrr=====================');

@@ -35,7 +35,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getCourseNumberAndTotalStudent();
   }
@@ -110,8 +109,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     shadowColor: MaterialStatePropertyAll(Colors.purple),
                   ),
                   onPressed: () async {
-                    print(sharedPreferences.getBool('isLogin'));
-                    print(sharedPreferences.getString('user'));
                     await sharedPreferences.clear();
                     Navigator.push(
                       context,

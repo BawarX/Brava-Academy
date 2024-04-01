@@ -5,16 +5,14 @@ import 'package:brava/constant.dart';
 import 'package:brava/data/course_data.dart';
 import 'package:brava/data/instructor_data.dart';
 import 'package:brava/model/courses.dart';
-import 'package:brava/model/instructor_model.dart';
 import 'package:brava/model/video_model.dart';
 import 'package:brava/provider/bookmark.dart';
 import 'package:brava/screen/Home/add-course-page/add_course.dart';
 import 'package:brava/screen/Home/course_detail.dart';
-import 'package:brava/screen/Home/profile.dart';
+import 'package:brava/screen/Home/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -42,6 +40,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    print('hhhhhhhhhhhhhhhhhhhhhhhhh');
+    print(instructorData);
+    print('ggggggggggggggggggggggggggggg');
     final user = jsonDecode(sharedPreferences.getString('user')!);
     String userNmae = user['firstname'] ?? "User";
     final provider = Provider.of<BookmarkProvider>(context, listen: true);
@@ -58,7 +59,7 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Gap(10),
-                upperWidgets(
+                UpperWidgets(
                   userNmae: userNmae,
                   userId: user['_id'],
                 ),
@@ -70,7 +71,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 const Gap(10),
-                  SizedBox(
+                SizedBox(
                   height: 50,
                   child: TextField(
                     decoration: InputDecoration(
@@ -122,9 +123,21 @@ class _HomePageState extends State<HomePage> {
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: Column(
                               children: [
-                                CircleAvatar(
-                                  backgroundImage:
-                                      AssetImage(instructorData[index].image),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => UserProfile(
+                                          instructor: instructorData[index],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: CircleAvatar(
+                                    backgroundImage: NetworkImage(
+                                        instructorData[index].image),
+                                  ),
                                 ),
                                 Text(
                                   instructorData[index].name,
@@ -378,8 +391,8 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class upperWidgets extends StatelessWidget {
-  const upperWidgets({
+class UpperWidgets extends StatelessWidget {
+  const UpperWidgets({
     super.key,
     required this.userNmae,
     required this.userId,
@@ -393,19 +406,9 @@ class upperWidgets extends StatelessWidget {
     return Row(
       children: [
         const Gap(10),
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ProfileScreen(),
-              ),
-            );
-          },
-          child: const CircleAvatar(
-            backgroundImage: AssetImage(
-              'assets/images/guy1.png',
-            ),
+        const CircleAvatar(
+          backgroundImage: AssetImage(
+            'assets/images/guy1.png',
           ),
         ),
         const Gap(5),

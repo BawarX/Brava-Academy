@@ -5,16 +5,17 @@ import 'dart:convert';
 import 'package:brava/api/api_service.dart';
 import 'package:brava/constant.dart';
 import 'package:brava/model/courses.dart';
-import 'package:brava/model/video_model.dart';
 import 'package:brava/screen/Home/add-course-page/widgets/video_player.dart';
-
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:quickalert/quickalert.dart';
-import 'package:video_player/video_player.dart';
 
 class CourseDetail extends StatelessWidget {
-  CourseDetail({super.key, required this.courseModel, required this.authorName, required this.authorImage});
+  CourseDetail(
+      {super.key,
+      required this.courseModel,
+      required this.authorName,
+      required this.authorImage});
   CourseModel courseModel;
   String authorName;
   String authorImage;
@@ -23,9 +24,7 @@ class CourseDetail extends StatelessWidget {
   final user = jsonDecode(sharedPreferences.getString('user')!);
   @override
   Widget build(BuildContext context) {
-    print(sharedPreferences.getBool('isLogin'));
-    print(sharedPreferences.getString('user'));
-    print(courseModel.students);
+    print('fffffffffffffffffffffffffff');
     bool userEnrolled = false;
     checkUserEnrolledTheCourse() {
       if (courseModel.authorId == user['_id']) {
@@ -78,7 +77,8 @@ class CourseDetail extends StatelessWidget {
               const Gap(5),
               Text(
                 courseModel.courseTitle,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               const Gap(5),
               Row(
@@ -109,7 +109,8 @@ class CourseDetail extends StatelessWidget {
                   const Spacer(),
                   Text(
                     'free',
-                    style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20),
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor, fontSize: 20),
                   )
                 ],
               ),
@@ -132,8 +133,10 @@ class CourseDetail extends StatelessWidget {
                   itemBuilder: (context, index) {
                     //final courseUrl = videoList[index].videoUrl;
                     // Text(courseModel.videos[index]['video${index + 1} title'], style: const TextStyle()),
-                    final courseUrl = courseModel.videos[index]['video${index + 1} url'];
-                    final courseTitle = courseModel.videos[index]['video${index + 1} title'];
+                    final courseUrl =
+                        courseModel.videos[index]['video${index + 1} url'];
+                    final courseTitle =
+                        courseModel.videos[index]['video${index + 1} title'];
                     return GestureDetector(
                       onTap: () {
                         if (userEnrolled) {
@@ -164,7 +167,8 @@ class CourseDetail extends StatelessWidget {
                           height: 70,
                           decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: const BorderRadius.all(Radius.circular(15)),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(15)),
                               border: Border.all(
                                 color: Colors.grey,
                               )),
@@ -181,7 +185,10 @@ class CourseDetail extends StatelessWidget {
                                 child: const Icon(Icons.play_arrow),
                               ),
                               const Gap(15),
-                              Text(courseModel.videos[index]['video${index + 1} title'], style: const TextStyle()),
+                              Text(
+                                  courseModel.videos[index]
+                                      ['video${index + 1} title'],
+                                  style: const TextStyle()),
                               const Spacer(),
                               !userEnrolled
                                   ? Icon(
@@ -205,14 +212,15 @@ class CourseDetail extends StatelessWidget {
                       onPressed: () async {
                         showDialog(
                             context: context,
-                            builder: (Context) {
+                            builder: (context) {
                               return const Dialog(
                                   insetPadding: EdgeInsets.all(10),
                                   child: SizedBox(
                                     width: double.infinity,
                                     height: 200,
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
                                       children: [
                                         Text(
                                           "Video Uploading...",
@@ -223,18 +231,23 @@ class CourseDetail extends StatelessWidget {
                                     ),
                                   ));
                             });
-                        await ApiService.EnrollCourse(courseModel.id, user['_id']);
+                        await ApiService.EnrollCourse(
+                            courseModel.id, user['_id']);
                         Navigator.pop(context);
                         // QuickAlert.show(context: context,type: QuickAlertType.success,
                         // title: 'Seccessfully Enrolled',);
                       },
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
+                        backgroundColor: MaterialStateProperty.all(
+                            Theme.of(context).primaryColor),
                       ),
                       child: const Center(
                         child: Text(
                           'Enroll',
-                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+                          style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
                         ),
                       ),
                     )

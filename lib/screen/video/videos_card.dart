@@ -1,4 +1,4 @@
-import 'package:brava/input_field.dart';
+import 'package:brava/screen/widget/input_field.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
@@ -13,7 +13,7 @@ class CardOfVideoTitleAndSelectVideo extends StatefulWidget {
     this.validator,
     this.video,
     required this.deleteButtonOnTap,
-    required this.controller ,
+    required this.controller,
   });
   final void Function() ontap;
   final void Function() deleteButtonOnTap;
@@ -24,15 +24,12 @@ class CardOfVideoTitleAndSelectVideo extends StatefulWidget {
   VideoPlayerController controller;
 
   @override
-  State<CardOfVideoTitleAndSelectVideo> createState() =>
-      _CardOfVideoTitleAndSelectVideoState();
+  State<CardOfVideoTitleAndSelectVideo> createState() => _CardOfVideoTitleAndSelectVideoState();
 }
 
-class _CardOfVideoTitleAndSelectVideoState
-    extends State<CardOfVideoTitleAndSelectVideo> {
+class _CardOfVideoTitleAndSelectVideoState extends State<CardOfVideoTitleAndSelectVideo> {
   @override
   Widget build(BuildContext context) {
-    print('bdisb 333333333333333333333${widget.video}');
     initalizeVideo() {
       widget.controller.initialize().then((value) => null);
       widget.controller.pause();
@@ -54,8 +51,7 @@ class _CardOfVideoTitleAndSelectVideoState
               children: [
                 Text(
                   'Video ${widget.videoNumber}',
-                  style: TextStyle(
-                      color: Theme.of(context).primaryColor, fontSize: 18),
+                  style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 18),
                 ),
                 GestureDetector(
                   onTap: widget.deleteButtonOnTap,
@@ -84,8 +80,7 @@ class _CardOfVideoTitleAndSelectVideoState
               ? GestureDetector(
                   onTap: widget.ontap,
                   child: Container(
-                    margin:
-                        const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                     width: MediaQuery.of(context).size.width - 50,
                     height: 170,
                     decoration: const BoxDecoration(
@@ -114,9 +109,7 @@ class _CardOfVideoTitleAndSelectVideoState
                         ),
                         Text(
                           'Select Video ${widget.videoNumber}',
-                          style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: 20),
+                          style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 20),
                         ),
                       ],
                     ),

@@ -1,6 +1,6 @@
-import 'package:brava/screen/Home/bookmarked_course.dart';
+import 'package:brava/screen/bookmark/bookmarked_course.dart';
 import 'package:brava/screen/Home/home_page.dart';
-import 'package:brava/screen/Home/profile.dart';
+import 'package:brava/screen/profile/profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';

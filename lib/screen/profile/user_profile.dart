@@ -48,15 +48,11 @@ class _UserProfileState extends State<UserProfile> {
                   children: [
                     Text(
                       "Courses",
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
                     ),
                     Text(
                       '0',
-                      style: TextStyle(
-                          fontSize: 16, color: Theme.of(context).primaryColor),
+                      style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColor),
                     ),
                   ],
                 ),
@@ -64,15 +60,11 @@ class _UserProfileState extends State<UserProfile> {
                   children: [
                     Text(
                       "Rank",
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
                     ),
                     Text(
                       '0',
-                      style: TextStyle(
-                          fontSize: 16, color: Theme.of(context).primaryColor),
+                      style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColor),
                     ),
                   ],
                 ),
@@ -85,8 +77,7 @@ class _UserProfileState extends State<UserProfile> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "User Courses",
-                  style: TextStyle(
-                      fontSize: 20, color: Theme.of(context).primaryColor),
+                  style: TextStyle(fontSize: 20, color: Theme.of(context).primaryColor),
                 ),
               ),
             ),
@@ -103,17 +94,17 @@ class _UserProfileState extends State<UserProfile> {
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CourseDetail(
-                                      courseModel: CourseModel.fromJson(
-                                        snapshot.data![index],
-                                      ),
-                                      authorName: widget.instructor.fullname,
-                                      authorImage: widget.instructor.image),
-                                ),
-                              );
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => CourseDetail(
+                              //         courseModel: CourseModel.fromJson(
+                              //           snapshot.data![index],
+                              //         ),
+                              //         authorName: widget.instructor.fullname,
+                              //         authorImage: widget.instructor.image),
+                              //   ),
+                              // );
                             },
                             child: Container(
                               margin: const EdgeInsets.all(5),
@@ -131,8 +122,7 @@ class _UserProfileState extends State<UserProfile> {
                                       decoration: BoxDecoration(
                                         shape: BoxShape.rectangle,
                                         image: DecorationImage(
-                                          image: NetworkImage(snapshot
-                                              .data![index]['backgroundImage']),
+                                          image: NetworkImage(snapshot.data![index]['backgroundImage']),
                                           fit: BoxFit.cover,
                                         ),
                                         borderRadius: const BorderRadius.only(
@@ -146,8 +136,7 @@ class _UserProfileState extends State<UserProfile> {
                                   Expanded(
                                     flex: 2,
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         const Gap(5),
                                         Text(
@@ -155,14 +144,12 @@ class _UserProfileState extends State<UserProfile> {
                                           style: TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
-                                            color:
-                                                Theme.of(context).primaryColor,
+                                            color: Theme.of(context).primaryColor,
                                           ),
                                         ),
                                         Text(
                                           "${snapshot.data![index]['description']}",
-                                          style: const TextStyle(
-                                              color: Colors.grey),
+                                          style: const TextStyle(color: Colors.grey),
                                         ),
                                       ],
                                     ),

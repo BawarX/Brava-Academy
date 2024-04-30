@@ -1,21 +1,18 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:convert';
 
-import 'package:brava/constant.dart';
+import 'package:brava/global/constant.dart';
 import 'package:brava/data/course_data.dart';
 import 'package:brava/data/instructor_data.dart';
 import 'package:brava/model/courses.dart';
 import 'package:brava/model/instructor_model.dart';
-import 'package:brava/screen/Home/nav_bar.dart';
+import 'package:brava/screen/widget/nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:quickalert/quickalert.dart';
 
 class ApiService {
-  void login(
-      {required String email,
-      required String password,
-      required BuildContext context}) async {
+  void login({required String email, required String password, required BuildContext context}) async {
     if (!await isEmailAndPasswordValid(email, password, context)) {
       return;
     }
@@ -30,18 +27,10 @@ class ApiService {
         var data = body['data'];
         var status = body['status'];
         if (!status) {
-          await showQuickAlert(
-              title: 'Something  Wrong!',
-              text: 'Your  Email is  Incorrect',
-              type: QuickAlertType.error,
-              context: context);
+          await showQuickAlert(title: 'Something  Wrong!', text: 'Your  Email is  Incorrect', type: QuickAlertType.error, context: context);
         } else {
           if (password == data['password']) {
-            await showQuickAlert(
-                title: 'Success!',
-                text: 'Login Successfully',
-                type: QuickAlertType.success,
-                context: context);
+            await showQuickAlert(title: 'Success!', text: 'Login Successfully', type: QuickAlertType.success, context: context);
             sharedPreferences.setBool('isLogin', true);
             sharedPreferences.setString('user', jsonEncode(data));
             Navigator.pushAndRemoveUntil(
@@ -53,11 +42,7 @@ class ApiService {
             );
             print('hi');
           } else {
-            await showQuickAlert(
-                title: 'Something  Wrong!',
-                text: 'Email OR Password is Incorrect',
-                type: QuickAlertType.error,
-                context: context);
+            await showQuickAlert(title: 'Something  Wrong!', text: 'Email OR Password is Incorrect', type: QuickAlertType.error, context: context);
           }
         }
       } else {
@@ -68,8 +53,7 @@ class ApiService {
     }
   }
 
-  void signUp(String firstname, String lastname, String email, String password,
-      BuildContext context) async {
+  void signUp(String firstname, String lastname, String email, String password, BuildContext context) async {
     Map<String, String> data = {
       "firstname": firstname,
       "lastname": lastname,
@@ -88,23 +72,12 @@ class ApiService {
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         if (data['status']) {
-          await showQuickAlert(
-              title: 'success',
-              text: 'successfully Create The Account',
-              type: QuickAlertType.success,
-              context: context);
+          await showQuickAlert(title: 'success', text: 'successfully Create The Account', type: QuickAlertType.success, context: context);
           sharedPreferences.setString('user', jsonEncode(data['data']));
           sharedPreferences.setBool('isLogin', true);
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const NavBar()),
-              (route) => false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const NavBar()), (route) => false);
         } else {
-          showQuickAlert(
-              title: 'Error',
-              text: data['data'],
-              type: QuickAlertType.error,
-              context: context);
+          showQuickAlert(title: 'Error', text: data['data'], type: QuickAlertType.error, context: context);
         }
       } else {
         throw Exception('Failed to load data');
@@ -124,8 +97,7 @@ class ApiService {
 
       await body.forEach((element) {
         course.add(CourseModel.fromJson(element));
-        instructorData.add(
-            Instructor.fromJson(element['author'] as Map<String, dynamic>));
+        instructorData.add(Instructor.fromJson(element['author'] as Map<String, dynamic>));
       });
       courseData = course;
     } else {
@@ -137,8 +109,7 @@ class ApiService {
   static Future<List> fetchusercourses(String userId) async {
     print('ggggggggggggggggggggggggggggggg');
     var response = await http.get(
-      Uri.parse(
-          'http://10.0.2.2:3000/course/search-course-by-authorid/$userId'),
+      Uri.parse('http://10.0.2.2:3000/course/search-course-by-authorid/$userId'),
     );
     if (response.statusCode == 200) {
       final body = jsonDecode(response.body);
@@ -151,8 +122,7 @@ class ApiService {
   }
 
   static addCourse(Map<String, dynamic> courseData) async {
-    var res = await http
-        .post(Uri.parse('http://10.0.2.2:3000/course/add-course'), body: {
+    var res = await http.post(Uri.parse('http://10.0.2.2:3000/course/add-course'), body: {
       'data': jsonEncode(courseData),
     });
     var body = jsonDecode(res.body);
@@ -169,52 +139,30 @@ class ApiService {
   }
 
   static updateCourse(String courseId, Map<String, dynamic> courseData) async {
-    final res = await http.put(
-        Uri.parse('http://10.0.2.2:3000/course/update-course-by-id/$courseId'),
-        body: {'data': jsonEncode(courseData)});
+    final res = await http.put(Uri.parse('http://10.0.2.2:3000/course/update-course-by-id/$courseId'), body: {'data': jsonEncode(courseData)});
     var body = jsonDecode(res.body);
     print(body);
   }
 
   static EnrollCourse(String courseId, String userId) async {
-    final res = await http.post(Uri.parse(
-        'http://10.0.2.2:3000/course/enroll-course/$courseId/$userId'));
+    final res = await http.post(Uri.parse('http://10.0.2.2:3000/course/enroll-course/$courseId/$userId'));
     var body = jsonDecode(res.body);
     print(body);
   }
 }
 
-Future<void> showQuickAlert(
-    {required String title,
-    required String text,
-    required QuickAlertType type,
-    required BuildContext context}) async {
-  await QuickAlert.show(
-      context: context,
-      type: type,
-      autoCloseDuration: const Duration(seconds: 3),
-      title: title,
-      text: text);
+Future<void> showQuickAlert({required String title, required String text, required QuickAlertType type, required BuildContext context}) async {
+  await QuickAlert.show(context: context, type: type, autoCloseDuration: const Duration(seconds: 3), title: title, text: text);
   return;
 }
 
-Future<bool> isEmailAndPasswordValid(
-    String email, String password, BuildContext context) async {
+Future<bool> isEmailAndPasswordValid(String email, String password, BuildContext context) async {
   if (!email.contains('@')) {
-    await showQuickAlert(
-        title: 'Error',
-        text: 'Invalid email address please enter the Valid Email',
-        type: QuickAlertType.error,
-        context: context);
+    await showQuickAlert(title: 'Error', text: 'Invalid email address please enter the Valid Email', type: QuickAlertType.error, context: context);
     return false;
   } else {
     if (password.trim().length < 8) {
-      await showQuickAlert(
-          title: 'Error',
-          text:
-              'Your Password is Invalid ,Password must be at least 8 characters long',
-          type: QuickAlertType.error,
-          context: context);
+      await showQuickAlert(title: 'Error', text: 'Your Password is Invalid ,Password must be at least 8 characters long', type: QuickAlertType.error, context: context);
       return false;
     }
     return true;

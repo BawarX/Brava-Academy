@@ -1,4 +1,5 @@
 import 'package:brava/api/api_service.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
@@ -152,9 +153,7 @@ class _Login_screenState extends State<Login_screen> {
                                       isVisisble = !isVisisble;
                                     });
                                   },
-                                  icon: Icon(isVisisble
-                                      ? Icons.visibility
-                                      : Icons.visibility_off),
+                                  icon: Icon(isVisisble ? Icons.visibility : Icons.visibility_off),
                                   color: outlineColor,
                                 ),
                               ),
@@ -186,10 +185,7 @@ class _Login_screenState extends State<Login_screen> {
                 const Gap(25),
                 GestureDetector(
                   onTap: () {
-                    service.login(
-                        email: emailController.text,
-                        password: passwordController.text,
-                        context: context);
+                    service.login(email: emailController.text, password: passwordController.text, context: context);
                   },
                   child: Container(
                     height: 45,
@@ -249,9 +245,10 @@ class _Login_screenState extends State<Login_screen> {
                     width: 60,
                     height: 50,
                     child: Container(
-                      child: Image.network(
-                          'http://pngimg.com/uploads/google/google_PNG19635.png',
-                          fit: BoxFit.cover),
+                      child: CachedNetworkImage(
+                        imageUrl: 'http://pngimg.com/uploads/google/google_PNG19635.png',
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),

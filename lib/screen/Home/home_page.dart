@@ -1,19 +1,22 @@
 import 'dart:convert';
 
 import 'package:brava/api/api_service.dart';
-import 'package:brava/constant.dart';
+import 'package:brava/global/constant.dart';
 import 'package:brava/data/course_data.dart';
 import 'package:brava/data/instructor_data.dart';
 import 'package:brava/model/courses.dart';
 import 'package:brava/model/users.dart';
 import 'package:brava/model/video_model.dart';
 import 'package:brava/provider/bookmark.dart';
-import 'package:brava/screen/Home/add-course-page/add_course.dart';
+import 'package:brava/screen/Home/add_course.dart';
 import 'package:brava/screen/Home/course_detail.dart';
-import 'package:brava/screen/Home/user_profile.dart';
+import 'package:brava/screen/profile/user_profile.dart';
+import 'package:brava/screen/widget/upper_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -26,6 +29,7 @@ class _HomePageState extends State<HomePage> {
   List<User> users = allUsers;
   bool searchOpen = false;
   TextEditingController searchController = TextEditingController();
+
   void serachUser(String query) {
     final suggestions = allUsers.where((users) {
       final userTitle = users.name.toLowerCase();
@@ -53,6 +57,12 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     fetchData();
+    init();
+  }
+
+  late SharedPreferences preferences;
+  Future init() async {
+    preferences = await SharedPreferences.getInstance();
   }
 
   @override
@@ -61,6 +71,7 @@ class _HomePageState extends State<HomePage> {
 
     final user = jsonDecode(sharedPreferences.getString('user')!);
     String userNmae = user['firstname'] ?? "User";
+
     final provider = Provider.of<BookmarkProvider>(context, listen: true);
     return Scaffold(
       backgroundColor: Colors.white,
@@ -187,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                                     );
                                   },
                                   child: CircleAvatar(
-                                    backgroundImage: NetworkImage(instructorData[index].image),
+                                    backgroundImage: CachedNetworkImageProvider(instructorData[index].image),
                                   ),
                                 ),
                                 Text(
@@ -239,7 +250,6 @@ class _HomePageState extends State<HomePage> {
                             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisExtent: 220),
                             itemBuilder: (context, index) {
                               CourseModel courseModel = courseData[index];
-
                               return GestureDetector(
                                 onTap: () {
                                   Navigator.push(
@@ -291,8 +301,8 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                               child: ClipRRect(
                                                 borderRadius: BorderRadius.circular(15),
-                                                child: Image.network(
-                                                  courseModel.image,
+                                                child: CachedNetworkImage(
+                                                  imageUrl: courseModel.image,
                                                   fit: BoxFit.cover,
                                                 ),
                                               ),
@@ -343,8 +353,9 @@ class _HomePageState extends State<HomePage> {
                                                     GestureDetector(
                                                       onTap: () async {
                                                         setState(() {
-                                                          courseModel.isBookmarked = !courseModel.isBookmarked;
+                                                          courseModel.isBookmarked = !courseModel.isBookmarked; // harchyakt habe lera 3akse dakatawa esta: false bwa true,
                                                           if (courseModel.isBookmarked) {
+                                                            // agar courseModel true bu awa adde bka naw provider add item, u ehse xoy daka ba mazbute...
                                                             provider.addItem(courseModel);
                                                           } else {
                                                             provider.removeItem(courseModel);
@@ -407,92 +418,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class UpperWidgets extends StatelessWidget {
-  const UpperWidgets({
-    super.key,
-    required this.userNmae,
-    required this.userId,
-  });
-
-  final String userNmae;
-  final String userId;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const Gap(10),
-        const CircleAvatar(
-          backgroundImage: AssetImage(
-            'assets/images/guy1.png',
-          ),
-        ),
-        const Gap(5),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Hi $userNmae",
-              style: const TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const Text(
-              "Welcome Back 👋",
-              style: TextStyle(
-                color: Colors.grey,
-              ),
-            )
-          ],
-        ),
-        const Spacer(),
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AddMyCourse(
-                  authorId: userId,
-                  appBarTitle: 'Add Course',
-                  textOfButton: 'Publish',
-                  controllers: [
-                    Video(videoTitle: TextEditingController(), videoUrl: ''),
-                  ],
-                  numberOfVideos: 1,
-                  courseDescriptionController: TextEditingController(),
-                  courseNameController: TextEditingController(),
-                  selectedImage: null,
-                ),
-              ),
-            );
-          },
-          child: Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(15),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  spreadRadius: 1,
-                  blurRadius: 1,
-                  offset: const Offset(0, 1.5), // changes position of shadow
-                ),
-              ],
-            ),
-            child: Icon(
-              Icons.add_circle_outline_rounded,
-              color: Theme.of(context).primaryColor,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

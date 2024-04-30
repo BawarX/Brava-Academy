@@ -1,17 +1,20 @@
 import 'dart:convert';
 
 import 'package:brava/api/api_service.dart';
-import 'package:brava/constant.dart';
+import 'package:brava/global/constant.dart';
 import 'package:brava/data/course_data.dart';
 import 'package:brava/model/video_model.dart';
-import 'package:brava/screen/Home/add-course-page/add_course.dart';
+import 'package:brava/screen/Home/add_course.dart';
 import 'package:brava/screen/authentication/start_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:gap/gap.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:quickalert/quickalert.dart';
+import 'package:sidebar_bigeagle/sidebar_bigeagle.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -33,6 +36,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  Future _pickImageFromGallery() async {
+    final returnedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (returnedImage == null) return;
+    setState(() {
+      user['image'] = returnedImage;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -50,6 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     return Scaffold(
       drawer: Drawer(
+        backgroundColor: Theme.of(context).primaryColor,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -83,6 +95,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ],
                         ),
                         child: GestureDetector(
+                          onTap: () {
+                            _pickImageFromGallery();
+                          },
                           child: Icon(
                             Icons.add_a_photo,
                             color: Theme.of(context).primaryColor,
@@ -93,12 +108,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
               ),
+              const Gap(10),
+              const Divider(),
               const Gap(50),
-              Text("First Name: $firstName"),
-              Text("last Name: $lastName"),
-              Text("email: $email"),
-              Text("pass: $pass"),
-              Text("ID(test): $id"),
+              drawerLabelEdit(
+                firstName: firstName,
+                label: 'First Name',
+              ),
+              Text(
+                "last Name: $lastName",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const Gap(5),
+              Text(
+                "email: $email",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const Gap(5),
+              Text(
+                "pass: $pass",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const Gap(5),
+              Text(
+                "ID(test): $id",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
               const Spacer(),
               SizedBox(
                 width: double.infinity,
@@ -136,7 +187,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
-                  image: NetworkImage(user['image']),
+                  image: CachedNetworkImageProvider(user['image']),
                 ),
               ),
             ),
@@ -310,7 +361,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     decoration: BoxDecoration(
                                       shape: BoxShape.rectangle,
                                       image: DecorationImage(
-                                        image: NetworkImage(courseData[index].image),
+                                        image: CachedNetworkImageProvider(courseData[index].image),
                                         fit: BoxFit.cover,
                                       ),
                                       borderRadius: const BorderRadius.only(
@@ -460,6 +511,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class drawerLabelEdit extends StatelessWidget {
+  const drawerLabelEdit({super.key, required this.firstName, required this.label});
+
+  final String firstName;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          "$label: $firstName",
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const Spacer(),
+        IconButton(
+          onPressed: () {},
+          icon: const Icon(
+            Icons.edit,
+            color: Colors.white,
+          ),
+        ),
+      ],
     );
   }
 }

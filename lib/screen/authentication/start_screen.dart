@@ -1,6 +1,7 @@
-import 'package:brava/constant.dart';
+import 'package:brava/global/constant.dart';
 import 'package:brava/screen/authentication/log_in.dart';
 import 'package:brava/screen/authentication/sign_up.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
@@ -46,10 +47,7 @@ class Screen1 extends StatelessWidget {
                   const Gap(25),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Login_screen()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const Login_screen()));
                     },
                     child: Container(
                       height: 55,
@@ -73,10 +71,7 @@ class Screen1 extends StatelessWidget {
                   const Gap(25),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const SignUp_screen()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUp_screen()));
                     },
                     child: Container(
                       height: 55,
@@ -103,8 +98,7 @@ class Screen1 extends StatelessWidget {
                     children: <Widget>[
                       Expanded(
                         child: Container(
-                          margin:
-                              const EdgeInsets.only(left: 10.0, right: 20.0),
+                          margin: const EdgeInsets.only(left: 10.0, right: 20.0),
                           child: const Divider(
                             color: Colors.white,
                             height: 36,
@@ -119,8 +113,7 @@ class Screen1 extends StatelessWidget {
                       ),
                       Expanded(
                         child: Container(
-                          margin:
-                              const EdgeInsets.only(left: 20.0, right: 10.0),
+                          margin: const EdgeInsets.only(left: 20.0, right: 10.0),
                           child: const Divider(
                             color: Colors.white,
                             height: 36,
@@ -138,9 +131,10 @@ class Screen1 extends StatelessWidget {
                       width: 60,
                       height: 50,
                       child: Container(
-                        child: Image.network(
-                            'http://pngimg.com/uploads/google/google_PNG19635.png',
-                            fit: BoxFit.cover),
+                        child: CachedNetworkImage(
+                          imageUrl: 'http://pngimg.com/uploads/google/google_PNG19635.png',
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),

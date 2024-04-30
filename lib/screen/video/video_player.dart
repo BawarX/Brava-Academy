@@ -23,7 +23,7 @@ class _MyHomePageState extends State<VideoPlayerScreen> {
   }
 
   void _initPlayer() async {
-    print(widget.videoUrl);
+    print('this isssssssssssssssssssssssssssssssss ${widget.videoUrl}');
     videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl));
     await videoPlayerController.initialize();
 
@@ -31,21 +31,8 @@ class _MyHomePageState extends State<VideoPlayerScreen> {
       videoPlayerController: videoPlayerController,
       autoPlay: true,
       looping: true,
-      // additionalOptions: (context) {
-      //   return <OptionItem>[
-      //     OptionItem(
-      //       onTap: () => debugPrint('Option 1 pressed!'),
-      //       iconData: Icons.chat,
-      //       title: 'Option 1',
-      //     ),
-      //     OptionItem(
-      //       onTap: () => debugPrint('Option 2 pressed!'),
-      //       iconData: Icons.share,
-      //       title: 'Option 2',
-      //     ),
-      //   ];
-      // },
     );
+    setState(() {});
   }
 
   @override
